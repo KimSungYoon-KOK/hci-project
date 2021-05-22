@@ -2,6 +2,7 @@ package com.android.hciproject.adapters
 
 import android.view.View
 import android.widget.ProgressBar
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.BindingAdapter
 
 @BindingAdapter("bind_visibility")
@@ -11,3 +12,4 @@ fun ProgressBar.bindVisibility(loading: Boolean) {
         else -> View.GONE
     }
 }
+

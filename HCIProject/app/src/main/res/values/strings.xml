@@ -3,4 +3,10 @@
     <string name="prompt_no_network">네트워크 연결 상태 확인 후 다시 실행하세요.</string>
     <string name="prompt_nickname">닉네임을 입력하세요.</string>
     <string name="prompt_log_in">로그인</string>
+    <string name="prompt_write_post">포스트 작성</string>
+    <string name="prompt_search">지역, 행사명을 입력하세요</string>
+    <string name="prompt_new_post">새 게시물</string>
+    <string name="prompt_next">다음</string>
+    <string name="prompt_title">제목</string>
+    <string name="prompt_content">내용</string>
 </resources>

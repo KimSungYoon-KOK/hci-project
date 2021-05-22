@@ -11,10 +11,6 @@ import com.android.hciproject.viewmodels.PostListViewModel
 
 class PostListFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = PostListFragment()
-    }
-
     private lateinit var viewModel: PostListViewModel
 
     override fun onCreateView(
@@ -29,5 +25,7 @@ class PostListFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PostListViewModel::class.java)
         // TODO: Use the ViewModel
     }
+
+
 
 }

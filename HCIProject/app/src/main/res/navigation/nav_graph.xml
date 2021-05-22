@@ -44,6 +44,39 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mainFragment_to_postListFragment"
+            app:destination="@id/postListFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mainFragment_to_writePostFragment"
+            app:destination="@id/writePostFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/postListFragment"
+        android:name="com.android.hciproject.ui.PostListFragment"
+        android:label="post_list_fragment"
+        tools:layout="@layout/post_list_fragment">
+        <action
+            android:id="@+id/action_postListFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/postListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/writePostFragment"
+        android:name="com.android.hciproject.ui.WritePostFragment"
+        android:label="WritePostFragment">
+        <action
+            android:id="@+id/action_writePostFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/writePostFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
