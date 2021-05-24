@@ -7,36 +7,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.android.hciproject.R
-import com.android.hciproject.databinding.PostListFragmentBinding
-import com.android.hciproject.viewmodels.PostListViewModel
+import com.android.hciproject.databinding.PostDetailFragmentBinding
+import com.android.hciproject.viewmodels.PostDetailViewModel
 
-class PostListFragment : Fragment() {
+class PostDetailFragment : Fragment() {
 
-    private var _binding: PostListFragmentBinding? = null
+    private lateinit var viewModel: PostDetailViewModel
+    private var _binding: PostDetailFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: PostListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = PostListViewModel()
-        _binding = PostListFragmentBinding.inflate(inflater, container, false)
+        viewModel = PostDetailViewModel()
+        _binding = PostDetailFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         setOnClickListener()
     }
 
     private fun setOnClickListener() {
-        binding.showMapBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_postListFragment_to_mainFragment)
+        binding.closeBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_postDetailFragmnet_to_mainFragment)
         }
     }
-
 
 }

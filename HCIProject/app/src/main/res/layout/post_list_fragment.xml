@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.PostListFragment">
 
@@ -10,16 +11,45 @@
             type="com.android.hciproject.viewmodels.PostListViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/post_item"/>
-        <include layout="@layout/post_item"/>
-        <include layout="@layout/post_item"/>
-        <include layout="@layout/post_item"/>
-        <include layout="@layout/post_item"/>
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include layout="@layout/post_item" />
+
+            <include layout="@layout/post_item" />
+
+            <include layout="@layout/post_item" />
+
+            <include layout="@layout/post_item" />
+
+            <include layout="@layout/post_item" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/showMapBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryColor"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/prompt_show_map"
+            android:textColor="@color/primaryTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </layout>

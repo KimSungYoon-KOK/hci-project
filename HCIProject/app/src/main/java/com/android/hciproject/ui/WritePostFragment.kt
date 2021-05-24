@@ -1,13 +1,11 @@
 package com.android.hciproject.ui
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import com.android.hciproject.R
 import com.android.hciproject.databinding.WritePostFragmentBinding
 import com.android.hciproject.viewmodels.WritePostViewModel
@@ -20,7 +18,6 @@ class WritePostFragment : Fragment() {
     private var _binding: WritePostFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: WritePostViewModel
-    val GET_GALLERY_IMAGE = 200
 
     val getContent = registerForActivityResult(GetContent()) { uri: Uri? ->
         // Handle the returned Uri
@@ -53,7 +50,7 @@ class WritePostFragment : Fragment() {
         }
 
         binding.nextBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
+            findNavController().navigate(R.id.action_writePostFragment_to_writeContentFragment)
         }
     }
 

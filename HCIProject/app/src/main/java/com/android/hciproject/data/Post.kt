@@ -9,7 +9,9 @@ data class Post(
     val uname: String,
     val content: String,
     val uploadTime: String,
+    val uploadLat: Double,
+    val uploadLng: Double,
     var comments: ArrayList<Comment>?
 ) : Serializable {
-    constructor() : this("pid", "title", "img", "uname", "content", "time", null)
+    constructor() : this("pid", "title", "img", "uname", "content", "time", 0.0,0.0,null)
 }

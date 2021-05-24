@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#1b5e20</color>
+    <color name="primaryLightColor">#4c8c4a</color>
+    <color name="primaryDarkColor">#003300</color>
+    <color name="secondaryColor">#880e4f</color>
+    <color name="secondaryLightColor">#bc477b</color>
+    <color name="secondaryDarkColor">#560027</color>
+    <color name="primaryTextColor">@color/white</color>
+    <color name="secondaryTextColor">@color/white</color>
+    <color name="pastelRed">#ad1457</color>
+    <color name="pastelOrange">#d84315</color>
+    <color name="pastelYellow">#d2ce56</color>
+    <color name="pastelGreen">#558b2f</color>
+    <color name="pastelBlue">#0277bd</color>
+    <color name="pastelIndigo">#283593</color>
+    <color name="pastelPurple">#6a1b9a</color>
+    <color name="pastelDeepPurple">#4527a0</color>
+    <color name="pastelBrown">#5d4037</color>
+    <color name="pastelLightGray">#757575</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="themeBackgroundTextColor">@color/white</color>
+    <color name="reverseThemeColor">@color/white</color>
+    <color name="appPrimaryHighlightColor">@color/white</color>
+    <color name="loginLocoColor">@color/white</color>
+    <color name="tabIconColor">@color/white</color>
+    <color name="settingsIconColor">@color/white</color>
+</resources>
