@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.hciproject.R
 import com.android.hciproject.databinding.LoginFragmentBinding
 import com.android.hciproject.viewmodels.LoginViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class LoginFragment : Fragment() {
 
@@ -46,6 +47,11 @@ class LoginFragment : Fragment() {
         imm.hideSoftInputFromWindow(binding.username.windowToken, 0)
         viewModel.login()
         findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+        Snackbar.make(
+            binding.container,
+            "안녕하세요, "+binding.username.text.toString()+"님!",
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 }

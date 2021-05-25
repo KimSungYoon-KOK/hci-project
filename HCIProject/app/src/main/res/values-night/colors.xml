@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#1b5e20</color>
-    <color name="primaryLightColor">#4c8c4a</color>
-    <color name="primaryDarkColor">#003300</color>
-    <color name="secondaryColor">#880e4f</color>
+    <color name="primaryColor">#e84545</color>
+    <color name="primaryLightColor">#903749</color>
+    <color name="primaryDarkColor">#53354a</color>
+    <color name="secondaryColor">#2b2e4a</color>
     <color name="secondaryLightColor">#bc477b</color>
     <color name="secondaryDarkColor">#560027</color>
     <color name="primaryTextColor">@color/white</color>
@@ -26,4 +26,5 @@
     <color name="loginLocoColor">@color/white</color>
     <color name="tabIconColor">@color/white</color>
     <color name="settingsIconColor">@color/white</color>
+    <color name="overlayColor">#80d3d3d3</color>
 </resources>

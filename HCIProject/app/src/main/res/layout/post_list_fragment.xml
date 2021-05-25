@@ -7,6 +7,10 @@
     <data>
 
         <variable
+            name="sharedViewModel"
+            type="com.android.hciproject.viewmodels.SharedViewModel" />
+
+        <variable
             name="viewModel"
             type="com.android.hciproject.viewmodels.PostListViewModel" />
     </data>
@@ -16,25 +20,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            app:bind_visibility="@{sharedViewModel.postList}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/recyclerview"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent">-->
 
-            <include layout="@layout/post_item" />
+        <!--            <include layout="@layout/post_item" />-->
 
-            <include layout="@layout/post_item" />
+        <!--            <include layout="@layout/post_item" />-->
 
-            <include layout="@layout/post_item" />
+        <!--            <include layout="@layout/post_item" />-->
 
-            <include layout="@layout/post_item" />
+        <!--            <include layout="@layout/post_item" />-->
 
-            <include layout="@layout/post_item" />
-        </LinearLayout>
+        <!--            <include layout="@layout/post_item" />-->
+        <!--        </LinearLayout>-->
 
         <TextView
             android:id="@+id/showMapBtn"

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
+
     val username: MutableLiveData<String> by lazy {
         MutableLiveData<String>().apply {
             postValue("")

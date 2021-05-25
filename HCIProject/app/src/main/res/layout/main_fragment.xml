@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="sharedViewModel"
+            type="com.android.hciproject.viewmodels.SharedViewModel" />
 
         <variable
             name="viewModel"
-            type="com.android.hciproject.viewmodels.MainViewModel" />
+            type="com.android.hciproject.viewmodels.MainFragmentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,13 +21,13 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
+            app:queryHint="@string/prompt_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/map"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="@string/prompt_search" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"

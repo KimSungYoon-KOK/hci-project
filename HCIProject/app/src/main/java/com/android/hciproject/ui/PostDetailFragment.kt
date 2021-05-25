@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.android.hciproject.R
 import com.android.hciproject.databinding.PostDetailFragmentBinding
 import com.android.hciproject.viewmodels.PostDetailViewModel
+import com.android.hciproject.viewmodels.SharedViewModel
 
 class PostDetailFragment : Fragment() {
 
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var viewModel: PostDetailViewModel
     private var _binding: PostDetailFragmentBinding? = null
     private val binding get() = _binding!!
@@ -24,6 +27,7 @@ class PostDetailFragment : Fragment() {
         _binding = PostDetailFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        binding.sharedViewModel = sharedViewModel
         return binding.root
     }
 

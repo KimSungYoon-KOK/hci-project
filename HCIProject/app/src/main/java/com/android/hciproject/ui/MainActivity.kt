@@ -3,15 +3,14 @@ package com.android.hciproject.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.android.hciproject.R
+import com.android.hciproject.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    val GET_GALLERY_IMAGE = 200
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -3,7 +3,7 @@ package com.android.hciproject.data
 import java.io.Serializable
 
 data class Post(
-    val pid: String,
+    val pid: Int,
     val title: String,
     val img: String,
     val uname: String,
@@ -13,5 +13,5 @@ data class Post(
     val uploadLng: Double,
     var comments: ArrayList<Comment>?
 ) : Serializable {
-    constructor() : this("pid", "title", "img", "uname", "content", "time", 0.0,0.0,null)
+    constructor() : this(1, "title", "img", "uname", "content", "time", 0.0,0.0,null)
 }
