@@ -27,4 +27,22 @@
     <color name="tabIconColor">@color/white</color>
     <color name="settingsIconColor">@color/white</color>
     <color name="overlayColor">#80d3d3d3</color>
+
+    <color name="redColor100">#FDEDEC</color>
+    <color name="redColor200">#FADBD8</color>
+    <color name="redColor300">#F5B7B1</color>
+    <color name="redColor400">#F1948A</color>
+    <color name="redColor500">#EC7063</color>
+    <color name="redColor600">#E74C3C</color>
+    <color name="redColor700">#CB4335</color>
+    <color name="redColor800">#B03A2E</color>
+
+    <color name="greenColor100">#E9F7EF</color>
+    <color name="greenColor200">#D4EFDF</color>
+    <color name="greenColor300">#A9DFBF</color>
+    <color name="greenColor400">#7DCEA0</color>
+    <color name="greenColor500">#52BE80</color>
+    <color name="greenColor600">#27AE60</color>
+    <color name="greenColor700">#229954</color>
+    <color name="greenColor800">#1E8449</color>
 </resources>
