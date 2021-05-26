@@ -36,8 +36,10 @@ android {
         jvmTarget = '1.8'
     }
 
-    dataBinding.enabled = true
-    viewBinding.enabled = true
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
 
 }
 
@@ -83,4 +85,8 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-appsync:3.1.4'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    // fusedLocationSource
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+
 }

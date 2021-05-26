@@ -10,7 +10,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="20dp"
-        android:src="@drawable/image"/>
+        android:src="@drawable/konkuk"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,11 +22,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/prompt_title"
+            android:id="@+id/title"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:id="@+id/content"
             android:text="@string/prompt_content" />
     </LinearLayout>
 </LinearLayout>

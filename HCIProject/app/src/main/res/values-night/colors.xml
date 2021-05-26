@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#e84545</color>
+    <color name="primaryLightColor">#903749</color>
+    <color name="primaryDarkColor">#53354a</color>
+    <color name="secondaryColor">#2b2e4a</color>
+    <color name="secondaryLightColor">#bc477b</color>
+    <color name="secondaryDarkColor">#560027</color>
+    <color name="primaryTextColor">@color/white</color>
+    <color name="secondaryTextColor">@color/white</color>
+    <color name="pastelRed">#ad1457</color>
+    <color name="pastelOrange">#d84315</color>
+    <color name="pastelYellow">#d2ce56</color>
+    <color name="pastelGreen">#558b2f</color>
+    <color name="pastelBlue">#0277bd</color>
+    <color name="pastelIndigo">#283593</color>
+    <color name="pastelPurple">#6a1b9a</color>
+    <color name="pastelDeepPurple">#4527a0</color>
+    <color name="pastelBrown">#5d4037</color>
+    <color name="pastelLightGray">#757575</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="themeBackgroundTextColor">@color/white</color>
+    <color name="reverseThemeColor">@color/white</color>
+    <color name="appPrimaryHighlightColor">@color/white</color>
+    <color name="loginLocoColor">@color/white</color>
+    <color name="tabIconColor">@color/white</color>
+    <color name="settingsIconColor">@color/white</color>
+    <color name="overlayColor">#80d3d3d3</color>
+
+    <color name="redColor100">#FDEDEC</color>
+    <color name="redColor200">#FADBD8</color>
+    <color name="redColor300">#F5B7B1</color>
+    <color name="redColor400">#F1948A</color>
+    <color name="redColor500">#EC7063</color>
+    <color name="redColor600">#E74C3C</color>
+    <color name="redColor700">#CB4335</color>
+    <color name="redColor800">#B03A2E</color>
+
+    <color name="greenColor100">#E9F7EF</color>
+    <color name="greenColor200">#D4EFDF</color>
+    <color name="greenColor300">#A9DFBF</color>
+    <color name="greenColor400">#7DCEA0</color>
+    <color name="greenColor500">#52BE80</color>
+    <color name="greenColor600">#27AE60</color>
+    <color name="greenColor700">#229954</color>
+    <color name="greenColor800">#1E8449</color>
+</resources>

@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="sharedViewModel"
+            type="com.android.hciproject.viewmodels.SharedViewModel" />
 
         <variable
             name="viewModel"
-            type="com.android.hciproject.viewmodels.MainViewModel" />
+            type="com.android.hciproject.viewmodels.MainFragmentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,14 +21,13 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
+            app:queryHint="@string/prompt_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:defaultQueryHint="@string/prompt_search"
             app:layout_constraintBottom_toTopOf="@id/map"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="@string/prompt_search" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
@@ -36,6 +38,59 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchView" />
+
+        <com.naver.maps.map.widget.LocationButtonView
+            android:id="@+id/locationBtn"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/map"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/showPostListBtn"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/zoomLevel1Btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/primaryColor"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/prompt_zoom_level_1"
+                android:textColor="@color/primaryTextColor" />
+
+            <TextView
+                android:id="@+id/zoomLevel2Btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/primaryColor"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/prompt_zoom_level_2"
+                android:textColor="@color/primaryTextColor" />
+
+            <TextView
+                android:id="@+id/zoomLevel3Btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/oval"
+                android:backgroundTint="@color/primaryColor"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/prompt_zoom_level_3"
+                android:textColor="@color/primaryTextColor" />
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/writePostBtn"
@@ -52,11 +107,11 @@
             android:id="@+id/showPostListBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/purple_200"
+            android:background="@color/primaryColor"
             android:gravity="center"
             android:padding="15dp"
-            android:text="게시물보기"
-            android:textColor="@color/white"
+            android:text="@string/prompt_show_list"
+            android:textColor="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

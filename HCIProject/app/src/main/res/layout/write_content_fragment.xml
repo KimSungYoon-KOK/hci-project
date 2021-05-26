@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.android.hciproject.viewmodels.WritePostViewModel" />
+            type="com.android.hciproject.viewmodels.WriteContentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,10 +28,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/closeBtn"
+                android:id="@+id/beforeBtn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_baseline_clear_24" />
+                android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
 
             <TextView
                 android:layout_width="0dp"
@@ -43,34 +43,36 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/nextBtn"
+                android:id="@+id/uploadBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:text="@string/prompt_next" />
+                android:text="@string/prompt_write" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/selectedPhoto"
+        <EditText
+            android:id="@+id/editContentText"
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/testimage"
+            android:minHeight="300dp"
+            android:gravity="top"
+            android:hint="@string/prompt_write_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/topBar" />
 
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/takePictureBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="사진 가져오기"
-            app:layout_constraintEnd_toEndOf="parent"
+        <ImageView
+            android:id="@+id/selectedPhoto"
+            android:layout_margin="15dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/testimage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/selectedPhoto" />
-
+            app:layout_constraintTop_toBottomOf="@id/editContentText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </layout>
