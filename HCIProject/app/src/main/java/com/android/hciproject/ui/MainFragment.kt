@@ -1,6 +1,8 @@
 package com.android.hciproject.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.icu.text.IDNA
 import android.os.Bundle
 import android.util.Log
@@ -30,17 +32,22 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import android.graphics.Color
+import android.location.Location
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: MainFragmentBinding
     private val viewModel: MainFragmentViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var mapFragment: MapFragment
-    private lateinit var naverMap: NaverMap
     private lateinit var searchMarker: Marker
+    private lateinit var naverMap: NaverMap
     private lateinit var mLocationSource: FusedLocationSource
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val PERMISSION_REQUEST_CODE = 100
     private val PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -63,10 +70,27 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requestPermission()
-        testMap()
         initMapFragment()
         setOnClickListener()
         setSearchListener()
+
+        Log.d("mainFragment", sharedViewModel.latLng.value.toString())
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun setFusedLocationClient() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val temp = LatLng(
+                        location.latitude,
+                        location.longitude
+                    )
+                    sharedViewModel.latLng.postValue(temp)
+                    makeOverlay(temp)
+                }
+            }
     }
 
     private fun setSearchListener() {
@@ -81,11 +105,12 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                         searchMarker.position = location
                         searchMarker.map = naverMap
                         val infoWindow = InfoWindow()
-                        infoWindow.adapter =object : InfoWindow.DefaultTextAdapter(requireContext()) {
-                            override fun getText(infoWindow: InfoWindow): CharSequence {
-                                return query.toString()
+                        infoWindow.adapter =
+                            object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                                override fun getText(infoWindow: InfoWindow): CharSequence {
+                                    return query.toString()
+                                }
                             }
-                        }
                         infoWindow.open(searchMarker)
 
                         naverMap.moveCamera(CameraUpdate.scrollAndZoomTo(location, 15.0))
@@ -110,8 +135,44 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE)
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
 
+                } else {
+                    Snackbar.make(
+                        binding.container,
+                        getString(R.string.prompt_request_permission),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+            -> {
+                // You can use the API that requires the permission.
+            }
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            }
+        }
     }
 
     private fun setOnClickListener() {
@@ -145,46 +206,44 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initMapFragment() {
-        val fm = parentFragmentManager
-        mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
+        mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
+        searchMarker = Marker()
+
+        val fm = childFragmentManager
+        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.map, it).commit()
             }
         mapFragment.getMapAsync(this)
-
-        sharedViewModel.mLocationSource.value = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
-        searchMarker = Marker()
-    }
-
-    private fun testMap() {
-        val bounds = LatLngBounds.Builder()
-            .include(LatLng(37.5640984, 126.9712268))
-            .include(LatLng(37.5651279, 126.9767904))
-            .include(LatLng(37.5625365, 126.9832241))
-            .include(LatLng(37.5585305, 126.9809297))
-            .include(LatLng(37.5590777, 126.974617))
-            .build()
-
     }
 
     @UiThread
     override fun onMapReady(p0: NaverMap) {
         this.naverMap = p0
-        val cameraPosition = CameraPosition(LatLng(37.54225941463205, 127.07629578159484), 14.0)
-        overlay.center = LatLng(37.54225941463205, 127.07629578159484)
-        overlay.map = naverMap
+
+        naverMap.apply {
+            mapType = NaverMap.MapType.Navi
+            locationSource = mLocationSource
+            locationTrackingMode = LocationTrackingMode.Follow
+        }
+
+        setFusedLocationClient()
+        setMapListener()
+        makeMarker()
+        setMapComponent()
+    }
+
+    private fun setMapListener() {
+        naverMap.setOnMapClickListener { point, coord ->
+            makeOverlay(coord)
+        }
+    }
+
+    private fun makeOverlay(_latLng: LatLng) {
+        overlay.center = _latLng
         overlay.radius = 1000.0         //1000m
         overlay.color = getColor(requireContext(), R.color.overlayColor)
-
-        makeMarker()
-        Log.d("makeMarker",  sharedViewModel.postList.value?.size.toString())
-        naverMap.apply {
-            this.cameraPosition = cameraPosition
-            mapType = NaverMap.MapType.Navi
-            locationSource = sharedViewModel.mLocationSource.value
-        }
-        setMapComponent()
-
+        overlay.map = naverMap
     }
 
     private fun makeMarker() {
@@ -193,7 +252,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             val listener = Overlay.OnClickListener { overlay ->
                 val marker = overlay as Marker
                 val infoWindow = InfoWindow()
-                infoWindow.adapter =object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
                     override fun getText(infoWindow: InfoWindow): CharSequence {
                         return post.title
                     }
@@ -217,4 +276,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             postMarker.map = naverMap
         }
     }
+
+
 }

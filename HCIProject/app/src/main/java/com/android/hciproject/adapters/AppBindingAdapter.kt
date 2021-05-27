@@ -5,6 +5,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 
 @BindingAdapter("bind_visibility")
@@ -16,7 +17,12 @@ fun ProgressBar.bindVisibility(loading: Boolean) {
 }
 
 @BindingAdapter("bind_visibility")
-fun RecyclerView.bindPostsVisibility(posts:List<Post>) {
+fun RecyclerView.bindPostsVisibility(posts: List<Post>) {
     if (posts.isNullOrEmpty()) View.GONE else View.VISIBLE
+}
+
+@BindingAdapter("bind_visibility")
+fun RecyclerView.bindCommentsVisibility(comments: List<Comment>) {
+    if (comments.isNullOrEmpty()) View.GONE else View.VISIBLE
 }
 

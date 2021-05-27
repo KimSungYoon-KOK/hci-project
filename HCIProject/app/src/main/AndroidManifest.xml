@@ -14,6 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App">
+        <service android:name="MyLocationService"
+            android:foregroundServiceType="location"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="4yjnfu2udm" />

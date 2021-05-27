@@ -31,6 +31,7 @@
                 android:id="@+id/beforeBtn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                app:tint="@color/primaryTextColor"
                 android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
 
             <TextView
@@ -39,7 +40,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/prompt_new_post"
-                android:textSize="20sp"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -47,30 +49,52 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:text="@string/prompt_write" />
+                android:textSize="18sp"
+                android:text="@string/prompt_write"
+                android:textColor="@color/primaryTextColor" />
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/editContentText"
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="300dp"
-            android:gravity="top"
-            android:hint="@string/prompt_write_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar" />
 
         <ImageView
             android:id="@+id/selectedPhoto"
-            android:layout_margin="15dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
             android:adjustViewBounds="true"
             android:src="@drawable/testimage"
+            app:layout_constraintBottom_toTopOf="@id/locationText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editContentText" />
+            app:layout_constraintTop_toBottomOf="@id/topBar" />
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/location_background"
+            android:padding="5dp"
+            android:text="@string/prompt_location"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/editContentText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/selectedPhoto" />
+
+        <EditText
+            android:id="@+id/editContentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="@string/prompt_write_content"
+            android:minHeight="150dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/locationText" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

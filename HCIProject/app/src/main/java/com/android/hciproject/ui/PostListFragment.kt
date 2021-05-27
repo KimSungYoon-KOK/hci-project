@@ -51,7 +51,10 @@ class PostListFragment : Fragment() {
     private fun setPostAdapter() {
         binding.recyclerview.layoutManager = LinearLayoutManager(context)
         binding.recyclerview.addItemDecoration(
-            DividerItemDecoration(context, 1)
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
         )
         val adapter = PostAdapter(sharedViewModel.postList.value!!)
         adapter.itemClickListener = object : PostAdapter.OnItemClickListener {

@@ -15,10 +15,13 @@
     <string name="prompt_show_map">지도로 보기</string>
     <string name="prompt_username">닉네임</string>
     <string name="prompt_time">시간</string>
+    <string name="prompt_location">위치</string>
 
     <string name="prompt_zoom_level_1">50km</string>
     <string name="prompt_zoom_level_2">5km</string>
     <string name="prompt_zoom_level_3">1km</string>
     <string name="prompt_no_result">검색 결과가 없습니다.</string>
-    <string name="prompt_write_content">내용을 입력하세요...</string>
+    <string name="prompt_write_content">내용을 입력하세요…</string>
+    <string name="prompt_request_permission">위치 권한이 필요합니다.</string>
+    <string name="prompt_write_comment">댓글을 입력하세요…</string>
 </resources>
