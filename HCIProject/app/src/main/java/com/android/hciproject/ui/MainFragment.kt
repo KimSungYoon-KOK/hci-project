@@ -50,10 +50,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mLocationSource: FusedLocationSource
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val PERMISSION_REQUEST_CODE = 100
-    private val PERMISSIONS = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
     var overlay = CircleOverlay()
 
     override fun onCreateView(
@@ -267,28 +263,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             postMarker.onClickListener = listener
             postMarker.map = naverMap
 
-//            val listener = Overlay.OnClickListener { overlay ->
-//                val marker = overlay as Marker
-//                val infoWindow = InfoWindow()
-//                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
-//                    override fun getText(infoWindow: InfoWindow): CharSequence {
-//                        return post.title
-//                    }
-//                }
-//                // 현재 마커에 정보 창이 열려있지 않을 경우 엶
-//                infoWindow.open(marker)
-//                infoWindow.setOnClickListener {
-//                    sharedViewModel.selectedPost.value = post
-//                    val intent = Intent(requireContext(), PostDetailActivity::class.java)
-//                    intent.putExtra("post",sharedViewModel.selectedPost.value)
-//                    startActivity(intent)
-////                    findNavController().navigate(R.id.action_mainFragment_to_postDetailFragment)
-//                    true
-//                }
-//                true
-//         }
-//            postMarker.onClickListener = listener
-//            postMarker.map = naverMap
         }
     }
 
