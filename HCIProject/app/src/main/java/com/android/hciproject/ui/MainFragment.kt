@@ -2,6 +2,7 @@ package com.android.hciproject.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -31,9 +32,12 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import android.graphics.Color
 import android.location.Location
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getSystemService
+import com.android.hciproject.data.Post
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -93,32 +97,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    val location = LocationUtils.addressToLocation(query, requireContext())
-                    if (location != null) {
-//                        searchMarker.map = null
-//                        searchMarker = Marker()
-//                        searchMarker.iconTintColor = Color.BLUE
-//                        searchMarker.position = location
-//                        searchMarker.map = naverMap
-//                        val infoWindow = InfoWindow()
-//                        infoWindow.adapter =
-//                            object : InfoWindow.DefaultTextAdapter(requireContext()) {
-//                                override fun getText(infoWindow: InfoWindow): CharSequence {
-//                                    return query.toString()
-//                                }
-//                            }
-//                        infoWindow.open(searchMarker)
-//
-//                        naverMap.moveCamera(CameraUpdate.scrollAndZoomTo(location, 15.0))
-                    } else {
-                        Snackbar.make(
-                            binding.container,
-                            getString(R.string.prompt_no_result),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
+                    searchPost(query)
                 }
-
+                hideKeyboard()
                 return true
             }
 
@@ -129,6 +110,19 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
+    private fun hideKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
+    }
+
+    private fun searchPost(query: String) {
+        deleteMarker()
+        for (post in sharedViewModel.postList.value!!) {
+            if (post.title.contains(query) || post.content.contains(query)) {
+                addMarker(post)
+            }
+        }
+    }
 
     private fun requestPermission() {
         val requestPermissionLauncher =
@@ -220,7 +214,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         naverMap.apply {
             mapType = NaverMap.MapType.Navi
             locationSource = mLocationSource
-            locationTrackingMode = LocationTrackingMode.Follow
+//            locationTrackingMode = LocationTrackingMode.Follow
         }
 
         setFusedLocationClient()
@@ -268,5 +262,33 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun addMarker(post: Post) {
+        val listener = Overlay.OnClickListener { overlay ->
+            sharedViewModel.selectedPost.value = post
+            val intent = Intent(requireContext(), PostDetailActivity::class.java)
+            Log.d("MainFragment", post.toString())
+            intent.putExtra("post", post)
+            startActivity(intent)
+            true
+        }
+        val infoWindow = InfoWindow()
+        infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+            override fun getText(infoWindow: InfoWindow): CharSequence {
+                return post.title
+            }
+        }
+        val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
+        postMarker.onClickListener = listener
+        postMarker.map = naverMap
+        infoWindow.open(postMarker)
+
+        postMarkers.add(postMarker)
+    }
+
+    private fun deleteMarker() {
+        for (m in postMarkers)
+            m.map = null
+        postMarkers.clear()
+    }
 
 }
