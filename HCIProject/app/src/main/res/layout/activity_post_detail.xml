@@ -6,18 +6,15 @@
     <data>
 
         <variable
-            name="sharedViewModel"
-            type="com.android.hciproject.viewmodels.SharedViewModel" />
-
-<!--        <variable-->
-<!--            name="viewModel"-->
-<!--            type="com.android.hciproject.viewmodels.PostDetailViewModel" />-->
+            name="viewModel"
+            type="com.android.hciproject.viewmodels.PostDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.PostDetailActivity">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -83,7 +80,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{sharedViewModel.selectedPost.title}"
+                        android:text="@{viewModel.post.title}"
                         android:textColor="@color/primaryTextColor"
                         android:textStyle="bold" />
 
@@ -96,13 +93,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@{sharedViewModel.selectedPost.uname}"
+                            android:text="@{viewModel.post.uname}"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{sharedViewModel.selectedPost.uploadTime}"
+                            android:text="@{viewModel.post.uploadTime}"
                             android:textColor="@color/primaryTextColor" />
                     </LinearLayout>
 
@@ -140,7 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="@{sharedViewModel.selectedPost.content}"
+                    android:text="@{viewModel.post.content}"
                     android:textColor="@color/primaryTextColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +147,7 @@
                     android:id="@+id/recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bind_visibility="@{sharedViewModel.selectedPost.comments}"
+                    app:bind_visibility="@{viewModel.post.comments}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/content" />

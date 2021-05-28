@@ -2,6 +2,7 @@ package com.android.hciproject.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.IDNA
 import android.os.Bundle
@@ -53,7 +54,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
-
     var overlay = CircleOverlay()
 
     override fun onCreateView(
@@ -73,8 +73,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         initMapFragment()
         setOnClickListener()
         setSearchListener()
-
-        Log.d("mainFragment", sharedViewModel.latLng.value.toString())
     }
 
     @SuppressLint("MissingPermission")
@@ -191,7 +189,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
         binding.zoomLevel2Btn.setOnClickListener {
             naverMap.moveCamera(CameraUpdate.zoomTo(12.0))
-            overlay.radius = 4000.0
+            overlay.radius = 5000.0
         }
 
         binding.zoomLevel3Btn.setOnClickListener {
@@ -235,13 +233,15 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun setMapListener() {
         naverMap.setOnMapClickListener { point, coord ->
+            naverMap.moveCamera(CameraUpdate.scrollTo(coord))
             makeOverlay(coord)
+//            binding.fetchPostFromLocation(coord)
         }
     }
 
     private fun makeOverlay(_latLng: LatLng) {
         overlay.center = _latLng
-        overlay.radius = 1000.0         //1000m
+        overlay.radius = sharedViewModel.selectedOverlaySize.value!!       //1000m
         overlay.color = getColor(requireContext(), R.color.overlayColor)
         overlay.map = naverMap
     }
@@ -249,31 +249,46 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private fun makeMarker() {
         for (post in sharedViewModel.postList.value!!) {
             val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
+            val infoWindow = InfoWindow()
             val listener = Overlay.OnClickListener { overlay ->
-                val marker = overlay as Marker
-                val infoWindow = InfoWindow()
-                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
-                    override fun getText(infoWindow: InfoWindow): CharSequence {
-                        return post.title
-                    }
-                }
-                if (marker.infoWindow == null) {
-                    // 현재 마커에 정보 창이 열려있지 않을 경우 엶
-                    infoWindow.open(marker)
-                    infoWindow.setOnClickListener {
-                        sharedViewModel.selectedPost.value = post
-                        findNavController().navigate(R.id.action_mainFragment_to_postDetailFragment)
-                        true
-                    }
-                } else {
-                    // 이미 현재 마커에 정보 창이 열려있을 경우 닫음
-                    infoWindow.close()
-                }
-
+                sharedViewModel.selectedPost.value = post
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                Log.d("MainFragment", post.toString())
+                intent.putExtra("post", post)
+                startActivity(intent)
                 true
             }
+            infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                override fun getText(infoWindow: InfoWindow): CharSequence {
+                    return post.title
+                }
+            }
+            infoWindow.open(postMarker)
             postMarker.onClickListener = listener
             postMarker.map = naverMap
+
+//            val listener = Overlay.OnClickListener { overlay ->
+//                val marker = overlay as Marker
+//                val infoWindow = InfoWindow()
+//                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+//                    override fun getText(infoWindow: InfoWindow): CharSequence {
+//                        return post.title
+//                    }
+//                }
+//                // 현재 마커에 정보 창이 열려있지 않을 경우 엶
+//                infoWindow.open(marker)
+//                infoWindow.setOnClickListener {
+//                    sharedViewModel.selectedPost.value = post
+//                    val intent = Intent(requireContext(), PostDetailActivity::class.java)
+//                    intent.putExtra("post",sharedViewModel.selectedPost.value)
+//                    startActivity(intent)
+////                    findNavController().navigate(R.id.action_mainFragment_to_postDetailFragment)
+//                    true
+//                }
+//                true
+//         }
+//            postMarker.onClickListener = listener
+//            postMarker.map = naverMap
         }
     }
 

@@ -21,6 +21,10 @@ class SharedViewModel : ViewModel() {
 
     var selectedPost = MutableLiveData<Post>()
 
+    val selectedOverlaySize = MutableLiveData<Double>().apply {
+        value = 1000.0
+    }
+
     init {
         viewModelScope.launch {
             val comments = ArrayList<Comment>()
@@ -78,5 +82,11 @@ class SharedViewModel : ViewModel() {
             searchWord.value = ""
         }
 
+    }
+
+    fun fetchTotalPostFromDb(){
+        viewModelScope.launch {
+            // post list 가져오기!
+        }
     }
 }

@@ -22,7 +22,7 @@ fun RecyclerView.bindPostsVisibility(posts: List<Post>) {
 }
 
 @BindingAdapter("bind_visibility")
-fun RecyclerView.bindCommentsVisibility(comments: List<Comment>) {
+fun RecyclerView.bindCommentsVisibility(comments: List<Comment>?) {
     if (comments.isNullOrEmpty()) View.GONE else View.VISIBLE
 }
 

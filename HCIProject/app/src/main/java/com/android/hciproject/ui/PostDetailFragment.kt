@@ -30,7 +30,6 @@ class PostDetailFragment : Fragment() {
         viewModel = PostDetailViewModel()
         _binding = PostDetailFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
         binding.sharedViewModel = sharedViewModel
         return binding.root
     }
