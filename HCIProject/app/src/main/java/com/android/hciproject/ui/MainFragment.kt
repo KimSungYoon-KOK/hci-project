@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.icu.text.IDNA
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil.inflate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,7 +23,6 @@ import com.android.hciproject.viewmodels.MainFragmentViewModel
 import com.android.hciproject.viewmodels.SharedViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.InfoWindow
@@ -45,12 +42,12 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: MainFragmentBinding
     private val viewModel: MainFragmentViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var searchMarker: Marker
     private lateinit var naverMap: NaverMap
     private lateinit var mLocationSource: FusedLocationSource
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val PERMISSION_REQUEST_CODE = 100
     var overlay = CircleOverlay()
+    private lateinit var postMarkers: ArrayList<Marker>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,10 +62,15 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         requestPermission()
         initMapFragment()
         setOnClickListener()
         setSearchListener()
+    }
+
+    fun init() {
+        postMarkers = ArrayList()
     }
 
     @SuppressLint("MissingPermission")
@@ -93,21 +95,21 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 if (query != null) {
                     val location = LocationUtils.addressToLocation(query, requireContext())
                     if (location != null) {
-                        searchMarker.map = null
-                        searchMarker = Marker()
-                        searchMarker.iconTintColor = Color.BLUE
-                        searchMarker.position = location
-                        searchMarker.map = naverMap
-                        val infoWindow = InfoWindow()
-                        infoWindow.adapter =
-                            object : InfoWindow.DefaultTextAdapter(requireContext()) {
-                                override fun getText(infoWindow: InfoWindow): CharSequence {
-                                    return query.toString()
-                                }
-                            }
-                        infoWindow.open(searchMarker)
-
-                        naverMap.moveCamera(CameraUpdate.scrollAndZoomTo(location, 15.0))
+//                        searchMarker.map = null
+//                        searchMarker = Marker()
+//                        searchMarker.iconTintColor = Color.BLUE
+//                        searchMarker.position = location
+//                        searchMarker.map = naverMap
+//                        val infoWindow = InfoWindow()
+//                        infoWindow.adapter =
+//                            object : InfoWindow.DefaultTextAdapter(requireContext()) {
+//                                override fun getText(infoWindow: InfoWindow): CharSequence {
+//                                    return query.toString()
+//                                }
+//                            }
+//                        infoWindow.open(searchMarker)
+//
+//                        naverMap.moveCamera(CameraUpdate.scrollAndZoomTo(location, 15.0))
                     } else {
                         Snackbar.make(
                             binding.container,
@@ -201,7 +203,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun initMapFragment() {
         mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
-        searchMarker = Marker()
+//        searchMarker = Marker()
 
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
@@ -213,7 +215,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     @UiThread
     override fun onMapReady(p0: NaverMap) {
-        this.naverMap = p0
+        naverMap = p0
 
         naverMap.apply {
             mapType = NaverMap.MapType.Navi
@@ -231,7 +233,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         naverMap.setOnMapClickListener { point, coord ->
             naverMap.moveCamera(CameraUpdate.scrollTo(coord))
             makeOverlay(coord)
-//            binding.fetchPostFromLocation(coord)
         }
     }
 
@@ -244,8 +245,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun makeMarker() {
         for (post in sharedViewModel.postList.value!!) {
-            val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
-            val infoWindow = InfoWindow()
             val listener = Overlay.OnClickListener { overlay ->
                 sharedViewModel.selectedPost.value = post
                 val intent = Intent(requireContext(), PostDetailActivity::class.java)
@@ -254,15 +253,18 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 startActivity(intent)
                 true
             }
+            val infoWindow = InfoWindow()
             infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
                 override fun getText(infoWindow: InfoWindow): CharSequence {
                     return post.title
                 }
             }
-            infoWindow.open(postMarker)
+            val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
             postMarker.onClickListener = listener
             postMarker.map = naverMap
+            infoWindow.open(postMarker)
 
+            postMarkers.add(postMarker)
         }
     }
 
