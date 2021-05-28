@@ -1,5 +1,5 @@
 name: Android CI
-# apk 파일을 생성하는 workflow 스크립트
+
 on:
   push:
     branches:
