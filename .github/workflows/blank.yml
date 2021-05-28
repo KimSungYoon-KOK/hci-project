@@ -5,9 +5,11 @@ on:
     branches:
       - master
       - develop
+      - dev-inae
   pull_request:
     branches:
       - develop
+      - dev-inae
 
 jobs:
   apk:
