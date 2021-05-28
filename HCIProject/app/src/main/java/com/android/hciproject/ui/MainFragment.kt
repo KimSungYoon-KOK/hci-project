@@ -198,7 +198,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initMapFragment() {
-        mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
 //        searchMarker = Marker()
 
         val fm = childFragmentManager
@@ -213,10 +212,11 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
 
+        mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         naverMap.apply {
             mapType = NaverMap.MapType.Navi
             locationSource = mLocationSource
-//            locationTrackingMode = LocationTrackingMode.Follow
+            locationTrackingMode = LocationTrackingMode.Follow
         }
 
         setFusedLocationClient()
