@@ -1,6 +1,8 @@
 package com.android.hciproject.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +62,10 @@ class PostListFragment : Fragment() {
         adapter.itemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onItemClick(post: Post) {
                 sharedViewModel.selectedPost.value = post
-                findNavController().navigate(R.id.action_postListFragment_to_postDetailFragment)
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                Log.d("PostListFragment", post.toString())
+                intent.putExtra("post", post)
+                startActivity(intent)
             }
         }
         binding.recyclerview.adapter = adapter

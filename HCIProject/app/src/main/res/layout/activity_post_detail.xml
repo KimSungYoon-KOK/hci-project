@@ -38,11 +38,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:id="@+id/closeBtn"
+                    <View
                         android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
+                        android:layout_height="30dp" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -51,12 +49,15 @@
                         android:gravity="center"
                         android:text="@string/prompt_post"
                         android:textColor="@color/primaryTextColor"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <View
+                    <ImageView
+                        android:id="@+id/closeBtn"
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_baseline_clear_24" />
+
                 </LinearLayout>
 
                 <View
@@ -120,7 +121,7 @@
                     android:id="@+id/iconBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="10dp"
                     app:layout_constraintTop_toBottomOf="@id/imageView">
 
@@ -130,6 +131,27 @@
                         android:layout_height="30dp"
                         android:background="@drawable/ic_baseline_favorite_24"
                         android:backgroundTint="@color/pastelRed" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/likeNumTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.post.getLikeNumToString}"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/likeTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prompt_like_text"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView
@@ -155,6 +177,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grayColor200"
+            app:layout_constraintBottom_toTopOf="@id/writeCommentLayout" />
 
         <LinearLayout
             android:id="@+id/writeCommentLayout"

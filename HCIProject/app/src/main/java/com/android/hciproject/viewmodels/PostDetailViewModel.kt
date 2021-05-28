@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 class PostDetailViewModel : ViewModel() {
     val post = MutableLiveData<Post>()
 
-    fun fetchPost(p:Post){
+    fun fetchPost(p: Post) {
         viewModelScope.launch {
             post.value = p
         }

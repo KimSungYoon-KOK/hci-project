@@ -48,7 +48,8 @@ class SharedViewModel : ViewModel() {
                     "time",
                     37.54225941463205,
                     127.07629578159484,
-                    comments
+                    comments,
+                    5
                 )
             )
             list.add(
@@ -61,7 +62,8 @@ class SharedViewModel : ViewModel() {
                     "2021.05.24.",
                     37.54125941463205,
                     127.07629578159484,
-                    comments
+                    comments,
+                    0
                 )
             )
             list.add(
@@ -74,7 +76,8 @@ class SharedViewModel : ViewModel() {
                     "time",
                     37.54725941463205,
                     127.07629578159484,
-                    comments
+                    comments,
+                    0
                 )
             )
             postList.postValue(list)
