@@ -3,6 +3,7 @@ package com.android.hciproject.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import kotlinx.coroutines.launch
 
@@ -13,5 +14,9 @@ class PostDetailViewModel : ViewModel() {
         viewModelScope.launch {
             post.value = p
         }
+    }
+
+    fun insertComment(comment: Comment){
+        // insert 구현
     }
 }

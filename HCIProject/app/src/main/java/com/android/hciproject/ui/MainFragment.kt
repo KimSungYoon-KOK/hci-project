@@ -32,6 +32,7 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import android.graphics.Color
 import android.location.Location
+import android.location.LocationManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import com.android.hciproject.data.Post
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.naver.maps.map.internal.NaverMapAccessor
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
@@ -221,6 +223,8 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         setMapListener()
         makeMarker()
         setMapComponent()
+//        sharedViewModel.fetchSharedData()
+        sharedViewModel.fetchAddressFromLocation(requireContext())
     }
 
     private fun setMapListener() {
@@ -289,6 +293,10 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         for (m in postMarkers)
             m.map = null
         postMarkers.clear()
+
+        
     }
+
+
 
 }

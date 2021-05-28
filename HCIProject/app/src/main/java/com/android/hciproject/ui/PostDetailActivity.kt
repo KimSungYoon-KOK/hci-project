@@ -1,9 +1,11 @@
 package com.android.hciproject.ui
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.hciproject.R
 import com.android.hciproject.adapters.CommentAdapter
+import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.ActivityMainBinding
 import com.android.hciproject.databinding.ActivityPostDetailBinding
@@ -84,7 +87,15 @@ class PostDetailActivity : AppCompatActivity() {
 
         binding.writeCommentBtn.setOnClickListener {
             //구현
+            hideKeyboard()
+            val c = Comment()
+            viewModel.insertComment(c)
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.writeCommentEditText.windowToken, 0)
     }
 
     private fun observeComments() {

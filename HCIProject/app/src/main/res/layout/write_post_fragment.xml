@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:text="@string/prompt_new_post"
                 android:textColor="@color/primaryTextColor"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView

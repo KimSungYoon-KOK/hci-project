@@ -25,4 +25,5 @@
     <string name="prompt_request_permission">위치 권한이 필요합니다.</string>
     <string name="prompt_write_comment">댓글을 입력하세요…</string>
     <string name="prompt_like_text">명이 좋아합니다.</string>
+    <string name="prompt_upload_post">게시글을 작성했습니다!</string>
 </resources>
