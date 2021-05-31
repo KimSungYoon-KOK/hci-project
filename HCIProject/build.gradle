@@ -4,7 +4,6 @@ buildscript {
     ext.navigation_version = "2.2.0-rc04"
     repositories {
         google()
-        jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
@@ -14,14 +13,13 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.amplifyframework:amplify-tools-gradle-plugin:1.0.2'
-        classpath 'com.amazonaws:aws-android-sdk-appsync-gradle-plugin:3.1.1'
+        classpath 'com.amazonaws:aws-android-sdk-appsync-gradle-plugin:3.1.2'
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
         maven { url 'https://naver.jfrog.io/artifactory/maven/'}
         maven { url 'https://plugins.gradle.org/m2/' }
     }

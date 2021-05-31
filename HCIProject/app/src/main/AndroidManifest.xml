@@ -18,9 +18,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App">
-        <activity android:name=".testAmplify.TestActivity"></activity>
 
+        <!-- Test -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <activity
+            android:name=".testAmplify.AuthenticationActivity"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".testAmplify.AddPetActivity" />
+        <activity android:name=".testAmplify.TestActivity"/>
+
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -28,13 +40,7 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/Theme.HCIProject">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.HCIProject"></activity>
     </application>
 
 </manifest>
