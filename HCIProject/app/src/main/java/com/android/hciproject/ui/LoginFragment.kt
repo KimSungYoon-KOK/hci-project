@@ -54,13 +54,21 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        hideKeyboard()
-        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-        Snackbar.make(
-            binding.container,
-            "안녕하세요, " + sharedViewModel.loginUserName.value + "님!",
-            Snackbar.LENGTH_SHORT
-        ).show()
+        if (binding.usernameEditText.text.isNullOrEmpty()) {
+            Snackbar.make(
+                binding.container,
+                "닉네임을 입력하세요!",
+                Snackbar.LENGTH_SHORT
+            ).show()
+        } else {
+            hideKeyboard()
+            findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+            Snackbar.make(
+                binding.container,
+                "안녕하세요, " + sharedViewModel.loginUserName.value + "님!",
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun hideKeyboard() {

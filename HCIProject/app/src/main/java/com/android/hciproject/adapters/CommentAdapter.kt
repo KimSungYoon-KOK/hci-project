@@ -48,4 +48,8 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Di
             content.text = comment.content
         }
     }
+
+    override fun submitList(list: MutableList<Comment>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
 }

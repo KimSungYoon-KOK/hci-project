@@ -3,7 +3,10 @@ package com.android.hciproject.ui
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
+import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -27,15 +30,15 @@ class PostDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setLayout()
-
-        binding = DataBindingUtil.setContentView<ActivityPostDetailBinding>(
+        binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_post_detail
         )
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        setLayout()
         fetchData()
+        observeComments()
     }
 
     private fun setLayout() {
@@ -47,6 +50,8 @@ class PostDetailActivity : AppCompatActivity() {
         val dm = applicationContext.resources.displayMetrics
         window.attributes.width = (dm.widthPixels * 0.9).toInt()
         window.attributes.height = (dm.heightPixels * 0.9).toInt()
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
     private fun fetchData() {
@@ -56,28 +61,34 @@ class PostDetailActivity : AppCompatActivity() {
         setOnClickListener()
         Log.d("PostDetailFragment", viewModel.post.toString())
         Log.d("PostDetailFragment::text", binding.content.text.toString())
-
-
+        Log.d("PostDetailFragment::comment", viewModel.post.value?.comments.toString())
     }
 
-    private fun observePost() {
+    private fun observeComments() {
         viewModel.post.observe(this, Observer { posts ->
+            if (posts.comments == null)
+                return@Observer
 
+            // Update comments recyclerview.
+            val recyclerView = binding.recyclerview
+            val adapter = recyclerView.adapter as CommentAdapter
+            if (!posts.comments.isNullOrEmpty())
+                adapter.submitList(posts.comments!!.toMutableList())
         })
 
     }
 
     private fun setCommentAdapter() {
-        val recyclerView = binding.recyclerview
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val adapter = CommentAdapter()
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+        binding.recyclerview.addItemDecoration(
             DividerItemDecoration(
                 this,
                 LinearLayoutManager.VERTICAL
             )
         )
+        val adapter = CommentAdapter()
+        binding.recyclerview.adapter = adapter
+
     }
 
     private fun setOnClickListener() {
@@ -96,19 +107,6 @@ class PostDetailActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.writeCommentEditText.windowToken, 0)
-    }
-
-    private fun observeComments() {
-//        viewModel.post.observe(viewLifecycleOwner) {
-//            if (it.comments == null)
-//                return@observe
-//
-//            val comments = it.comments
-//
-//            val recyclerView = binding.recyclerview
-//            val adapter = recyclerView.adapter as CommentAdapter
-//            adapter.submitList(comments)
-//        }
     }
 
 
