@@ -15,7 +15,7 @@ class AuthenticationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_authentication)
 
         AWSMobileClient.getInstance()
-            .initialize(applicationContext, object : Callback<UserStateDetails?> {
+            .initialize(this, object : Callback<UserStateDetails?> {
                 override fun onResult(userStateDetails: UserStateDetails?) {
                     if (userStateDetails != null) {
                         Log.i(TAG, userStateDetails.userState.toString())
