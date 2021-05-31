@@ -56,9 +56,23 @@ class SharedViewModel : ViewModel() {
                     "img",
                     "김성윤",
                     "건국대학교의 청심대에요",
-                    "time",
+                    "1시간 전",
                     37.54225941463205,
                     127.07629578159484,
+                    comments,
+                    5
+                )
+            )
+            list.add(
+                Post(
+                    1,
+                    "먼곳",
+                    "img",
+                    "김성윤",
+                    "건국대학교의 청심대에요",
+                    "2시간 전",
+                    37.56725941463205,
+                    127.07649578159484,
                     comments,
                     5
                 )
@@ -70,7 +84,7 @@ class SharedViewModel : ViewModel() {
                     "img",
                     "김인애",
                     "건국대학교의 일감호에요.",
-                    "2021.05.24.",
+                    "30분 전",
                     37.54125941463205,
                     127.07629578159484,
                     comments,
@@ -96,6 +110,12 @@ class SharedViewModel : ViewModel() {
             searchWord.value = ""
         }
 
+    }
+
+    fun selectPost(post: Post) {
+        viewModelScope.launch {
+            selectedPost.postValue(post)
+        }
     }
 
     fun fetchLoginUserName(name: String) {
@@ -130,9 +150,13 @@ class SharedViewModel : ViewModel() {
             e.printStackTrace()
             Log.d("SharedViewModel", "입출력 오류")
         }
-        if (address != null)
-            this.address.postValue(address[0].getAddressLine(0))
-        else
+        if (address != null) {
+            var addr = address[0].getAddressLine(0)
+            if (addr.startsWith("대한민국 ")) {
+                addr = addr.replace("대한민국 ", "")
+            }
+            this.address.postValue(addr)
+        } else
             this.address.postValue("위치를 입력하세요")
     }
 }

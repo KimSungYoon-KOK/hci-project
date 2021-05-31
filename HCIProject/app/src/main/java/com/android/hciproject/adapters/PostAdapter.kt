@@ -27,6 +27,8 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback) 
         val titleTextView: TextView = itemView.findViewById(R.id.title)
         val timeTextView: TextView = itemView.findViewById(R.id.time)
         val contentTextView: TextView = itemView.findViewById(R.id.content)
+        val likeNumTextView: TextView = itemView.findViewById(R.id.likeNum)
+        val commentNumTextView: TextView = itemView.findViewById(R.id.commentNum)
 
         init {
             itemView.setOnClickListener {
@@ -46,6 +48,8 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback) 
             LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false)
         )
 
+        holder.likeNumTextView.isSelected = true
+        holder.commentNumTextView.isSelected = true
         holder.titleTextView.isSelected = true
         holder.timeTextView.isSelected = true
         holder.contentTextView.isSelected = true
@@ -59,6 +63,11 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback) 
             titleTextView.text = post.title
             timeTextView.text = post.uploadTime
             contentTextView.text = post.content
+            likeNumTextView.text = post.like.toString()
+            if (post.comments == null)
+                commentNumTextView.text = "0"
+            else
+                commentNumTextView.text = post.comments!!.size.toString()
         }
     }
 
