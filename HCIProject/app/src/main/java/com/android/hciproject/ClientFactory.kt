@@ -7,7 +7,7 @@ import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider
 
 
-class ClientTest {
+class ClientFactory {
     @Volatile
     private var client: AWSAppSyncClient? = null
 
