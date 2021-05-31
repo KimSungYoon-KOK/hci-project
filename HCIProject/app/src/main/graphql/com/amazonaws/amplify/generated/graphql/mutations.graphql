@@ -7,6 +7,7 @@ mutation CreatePet(
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }
@@ -19,6 +20,7 @@ mutation UpdatePet(
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }
@@ -31,6 +33,7 @@ mutation DeletePet(
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }

@@ -4,6 +4,7 @@ subscription OnCreatePet {
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }
@@ -13,6 +14,7 @@ subscription OnUpdatePet {
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }
@@ -22,6 +24,7 @@ subscription OnDeletePet {
     id
     name
     description
+    photo
     createdAt
     updatedAt
   }

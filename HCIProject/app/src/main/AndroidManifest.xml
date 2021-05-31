@@ -21,7 +21,7 @@
 
         <!-- Test -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-
+        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" />
         <activity
             android:name=".testAmplify.AuthenticationActivity"
             android:noHistory="true">

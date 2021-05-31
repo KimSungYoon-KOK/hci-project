@@ -101,6 +101,7 @@ class TestActivity : AppCompatActivity() {
                     data.id(),
                     data.name(),
                     data.description(),
+                    data.photo(),
                     data.createdAt(),
                     data.updatedAt()
                 )
