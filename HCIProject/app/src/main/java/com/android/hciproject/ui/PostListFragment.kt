@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.hciproject.R
+import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.adapters.PostAdapter
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.PostListFragmentBinding
@@ -42,6 +45,7 @@ class PostListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setOnClickListener()
         setPostAdapter()
+        observePostList()
     }
 
     private fun setOnClickListener() {
@@ -58,7 +62,7 @@ class PostListFragment : Fragment() {
                 LinearLayoutManager.VERTICAL
             )
         )
-        val adapter = PostAdapter(sharedViewModel.postList.value!!)
+        val adapter = PostAdapter()
         adapter.itemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onItemClick(post: Post) {
                 sharedViewModel.selectedPost.value = post
@@ -71,5 +75,17 @@ class PostListFragment : Fragment() {
         binding.recyclerview.adapter = adapter
     }
 
+    private fun observePostList(){
+        sharedViewModel.postList.observe(viewLifecycleOwner, Observer {
+            if(it == null)
+                return@Observer
+
+            // Update comments recyclerview.
+            val recyclerView = binding.recyclerview
+            val adapter = recyclerView.adapter as PostAdapter
+            if (!it.isNullOrEmpty())
+                adapter.submitList(it.toMutableList())
+        })
+    }
 
 }

@@ -4,13 +4,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.android.hciproject.R
+import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 
-class PostAdapter(val postList: List<Post>) :
-    RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback) {
+
+    object DiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem.title == newItem.title
+        }
+    }
+
+    inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val titleTextView: TextView = itemView.findViewById(R.id.title)
+        val timeTextView: TextView = itemView.findViewById(R.id.time)
+        val contentTextView: TextView = itemView.findViewById(R.id.content)
+
+        init {
+            itemView.setOnClickListener {
+                itemClickListener.onItemClick(currentList[adapterPosition])
+            }
+        }
+    }
 
     lateinit var itemClickListener: OnItemClickListener
 
@@ -18,29 +41,29 @@ class PostAdapter(val postList: List<Post>) :
         fun onItemClick(post: Post)
     }
 
-    inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.title)
-        val content: TextView = itemView.findViewById(R.id.content)
-
-        init {
-            itemView.setOnClickListener {
-                itemClickListener.onItemClick(postList[adapterPosition])
-            }
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.post_item, parent, false)
-        return PostViewHolder(view)
-    }
+        val holder = PostViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false)
+        )
 
-    override fun getItemCount(): Int {
-        return postList.size
+        holder.titleTextView.isSelected = true
+        holder.timeTextView.isSelected = true
+        holder.contentTextView.isSelected = true
+
+        return holder
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.title.text = postList[position].title
-        holder.content.text = postList[position].content
+        val post = currentList[position]
+        holder.apply {
+            titleTextView.text = post.title
+            timeTextView.text = post.uploadTime
+            contentTextView.text = post.content
+        }
     }
+
+    override fun submitList(list: MutableList<Post>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
+
 }
