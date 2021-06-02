@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazonaws.amplify.generated.graphql.ListPetsQuery
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -23,7 +23,7 @@ class MyAdapter(val clientFactory: ClientFactory)
     :RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
     lateinit var context: Context
-    private var mData: List<ListPetsQuery.Item> = ArrayList()
+    private var mData: List<ListPostsQuery.Item> = ArrayList()
     var localUrl: String? = null
 
 
@@ -34,13 +34,13 @@ class MyAdapter(val clientFactory: ClientFactory)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var txt_name: TextView = itemView.findViewById(R.id.txt_name)
-        private var txt_description: TextView = itemView.findViewById(R.id.txt_description)
+        private var txt_title: TextView = itemView.findViewById(R.id.txt_name)
+        private var txt_content: TextView = itemView.findViewById(R.id.txt_description)
         private var image_view: ImageView = itemView.findViewById(R.id.image_view)
 
-        fun bindData(item: ListPetsQuery.Item) {
-            txt_name.text = item.name()
-            txt_description.text = item.description()
+        fun bindData(item: ListPostsQuery.Item) {
+            txt_title.text = "${item.title()}, uname: ${item.uname()}"
+            txt_content.text = item.content()
             if (item.photo() != null) {
                 if (localUrl == null) {
                     downloadWithTransferUtility(item.photo()!!)
@@ -93,7 +93,7 @@ class MyAdapter(val clientFactory: ClientFactory)
         return mData.size
     }
 
-    fun setItems(items: List<ListPetsQuery.Item>) {
+    fun setItems(items: List<ListPostsQuery.Item>) {
         mData = items
     }
 

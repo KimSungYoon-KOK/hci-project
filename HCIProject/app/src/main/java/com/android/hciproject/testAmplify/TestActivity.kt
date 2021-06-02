@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.amplify.generated.graphql.OnCreatePostSubscription
 import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
 import com.android.hciproject.ClientFactory
@@ -17,8 +19,6 @@ import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
-
 
 
 class TestActivity : AppCompatActivity() {
@@ -106,9 +106,13 @@ class TestActivity : AppCompatActivity() {
                 val addedItem = ListPostsQuery.Item(
                     data!!.__typename(),
                     data.id(),
-                    data.name(),
-                    data.description(),
+                    data.title(),
+                    data.uname(),
+                    data.content(),
+                    data.uploadLat(),
+                    data.uploadLng(),
                     data.photo(),
+                    null,
                     data.createdAt(),
                     data.updatedAt()
                 )

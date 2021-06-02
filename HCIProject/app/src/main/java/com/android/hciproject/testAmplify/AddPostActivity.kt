@@ -18,8 +18,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.amazonaws.amplify.generated.graphql.CreatePetMutation
-import com.amazonaws.amplify.generated.graphql.ListPetsQuery
+import com.amazonaws.amplify.generated.graphql.CreatePostMutation
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -28,7 +29,7 @@ import com.android.hciproject.R
 import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import type.CreatePetInput
+import type.CreatePostInput
 import java.io.*
 import java.util.*
 import javax.annotation.Nonnull
@@ -40,7 +41,7 @@ class AddPostActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_pet)
+        setContentView(R.layout.activity_add_post)
 
         clientFactory.init(applicationContext)
 
@@ -71,23 +72,23 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     private fun save() {
-        val input = getCreatePetInput()
+        val input = getCreatePostInput()
 
-        val addPetMutation = CreatePetMutation.builder()
+        val addPostMutation = CreatePostMutation.builder()
             .input(input!!)
             .build()
 
         clientFactory.appSyncClient()
-            .mutate(addPetMutation)
-            .refetchQueries(ListPetsQuery.builder().build())
+            .mutate(addPostMutation)
+            .refetchQueries(ListPostsQuery.builder().build())
             .enqueue(mutateCallback)
 
     }
 
     // Mutation callback code
-    private val mutateCallback: GraphQLCall.Callback<CreatePetMutation.Data> =
-        object : GraphQLCall.Callback<CreatePetMutation.Data>() {
-            override fun onResponse(response: Response<CreatePetMutation.Data>) {
+    private val mutateCallback: GraphQLCall.Callback<CreatePostMutation.Data> =
+        object : GraphQLCall.Callback<CreatePostMutation.Data>() {
+            override fun onResponse(response: Response<CreatePostMutation.Data>) {
                 runOnUiThread {
                     Toast.makeText(this@AddPostActivity, "Added pet", Toast.LENGTH_SHORT).show()
                     finish()
@@ -236,19 +237,27 @@ class AddPostActivity : AppCompatActivity() {
         })
     }
 
-    private fun getCreatePetInput(): CreatePetInput? {
-        val name = (findViewById<View>(R.id.editTxt_name) as EditText).text.toString()
-        val description =
-            (findViewById<View>(R.id.editText_description) as EditText).text.toString()
+    private fun getCreatePostInput(): CreatePostInput? {
+        val title = (findViewById<View>(R.id.editTxt_name) as EditText).text.toString()
+        val content = (findViewById<View>(R.id.editText_description) as EditText).text.toString()
+        val uname = AWSMobileClient.getInstance().username.toString()
+        val uploadLat = "Lat"
+        val uploadLng = "Lng"
         return if (photoPath != null) {
-            CreatePetInput.builder()
-                .name(name)
-                .description(description)
+            CreatePostInput.builder()
+                .title(title)
+                .content(content)
+                .uname(uname)
+                .uploadLat(uploadLat)
+                .uploadLng(uploadLng)
                 .photo(getS3Key(photoPath!!)).build()
         } else {
-            CreatePetInput.builder()
-                .name(name)
-                .description(description)
+            CreatePostInput.builder()
+                .title(title)
+                .content(content)
+                .uname(uname)
+                .uploadLat(uploadLat)
+                .uploadLng(uploadLng)
                 .build()
         }
     }
