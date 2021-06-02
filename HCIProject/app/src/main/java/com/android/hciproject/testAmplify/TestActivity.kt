@@ -1,7 +1,9 @@
 package com.android.hciproject.testAmplify
 
+import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -35,7 +37,7 @@ class TestActivity : AppCompatActivity() {
 
         val mRecyclerView = findViewById<RecyclerView>(R.id.recycler_view);
         mRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
-        mAdapter = MyAdapter()
+        mAdapter = MyAdapter(clientFactory)
         mRecyclerView.adapter = mAdapter
 
         val btnAddPet = findViewById<FloatingActionButton>(R.id.btn_addPet)
@@ -57,6 +59,13 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun query() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Log.d(TAG, "WRITE_EXTERNAL_STORAGE permission not granted! Requesting...")
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
+        }
+
         clientFactory.appSyncClient()
             .query(ListPetsQuery.builder().build())
             .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)

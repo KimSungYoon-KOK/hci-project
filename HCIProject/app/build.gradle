@@ -99,5 +99,6 @@ dependencies {
 
     // S3
     implementation 'com.amazonaws:aws-android-sdk-s3:2.23.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
 
 }

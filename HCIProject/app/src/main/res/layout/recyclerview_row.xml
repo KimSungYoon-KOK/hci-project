@@ -9,10 +9,8 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:maxHeight="200dp"
-        android:layout_weight="30"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         />
 
     <LinearLayout
