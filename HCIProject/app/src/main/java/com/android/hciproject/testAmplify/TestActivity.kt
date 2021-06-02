@@ -9,8 +9,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amazonaws.amplify.generated.graphql.ListPetsQuery
-import com.amazonaws.amplify.generated.graphql.OnCreatePetSubscription
 import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
 import com.android.hciproject.ClientFactory
@@ -27,7 +25,7 @@ class TestActivity : AppCompatActivity() {
 
     private lateinit var mAdapter: MyAdapter
     private val clientFactory = ClientFactory()
-    private var mPets: ArrayList<ListPetsQuery.Item>? = null
+    private var mPosts: ArrayList<ListPostsQuery.Item>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +38,10 @@ class TestActivity : AppCompatActivity() {
         mAdapter = MyAdapter(clientFactory)
         mRecyclerView.adapter = mAdapter
 
-        val btnAddPet = findViewById<FloatingActionButton>(R.id.btn_addPet)
-        btnAddPet.setOnClickListener {
-            val addPetIntent = Intent(this@TestActivity, AddPetActivity::class.java)
-            startActivity(addPetIntent)
+        val btnAddPost = findViewById<FloatingActionButton>(R.id.btn_addPost)
+        btnAddPost.setOnClickListener {
+            val addPostIntent = Intent(this@TestActivity, AddPostActivity::class.java)
+            startActivity(addPostIntent)
         }
     }
 
@@ -67,18 +65,18 @@ class TestActivity : AppCompatActivity() {
         }
 
         clientFactory.appSyncClient()
-            .query(ListPetsQuery.builder().build())
+            .query(ListPostsQuery.builder().build())
             .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
             .enqueue(queryCallback)
     }
 
-    private val queryCallback: GraphQLCall.Callback<ListPetsQuery.Data> =
-        object : GraphQLCall.Callback<ListPetsQuery.Data>() {
-            override fun onResponse(response: Response<ListPetsQuery.Data>) {
-                mPets = ArrayList(response.data()?.listPets()?.items())
-                Log.i(TAG, "Retrieved list items: $mPets")
+    private val queryCallback: GraphQLCall.Callback<ListPostsQuery.Data> =
+        object : GraphQLCall.Callback<ListPostsQuery.Data>() {
+            override fun onResponse(response: Response<ListPostsQuery.Data>) {
+                mPosts = ArrayList(response.data()?.listPosts()?.items())
+                Log.i(TAG, "Retrieved list items: $mPosts")
                 runOnUiThread {
-                    mAdapter.setItems(mPets!!)
+                    mAdapter.setItems(mPosts!!)
                     mAdapter.notifyDataSetChanged()
                 }
             }
@@ -90,22 +88,22 @@ class TestActivity : AppCompatActivity() {
 
 
     // 구독 및 알람
-    private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePetSubscription.Data>
+    private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePostSubscription.Data>
 
     private fun subscribe() {
-        val subscription: OnCreatePetSubscription = OnCreatePetSubscription.builder().build()
+        val subscription: OnCreatePostSubscription = OnCreatePostSubscription.builder().build()
         subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
         subscriptionWatcher.execute(subCallback)
     }
 
-    private val subCallback: AppSyncSubscriptionCall.Callback<OnCreatePetSubscription.Data> =
-        object : AppSyncSubscriptionCall.Callback<OnCreatePetSubscription.Data> {
-            override fun onResponse(response: Response<OnCreatePetSubscription.Data>) {
+    private val subCallback: AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> =
+        object : AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> {
+            override fun onResponse(response: Response<OnCreatePostSubscription.Data>) {
                 Log.i("Subscription", response.data().toString())
 
                 // Update UI with the newly added item
-                val data = response.data()!!.onCreatePet()
-                val addedItem = ListPetsQuery.Item(
+                val data = response.data()!!.onCreatePost()
+                val addedItem = ListPostsQuery.Item(
                     data!!.__typename(),
                     data.id(),
                     data.name(),
@@ -115,8 +113,8 @@ class TestActivity : AppCompatActivity() {
                     data.updatedAt()
                 )
                 runOnUiThread {
-                    mPets!!.add(addedItem)
-                    mAdapter.notifyItemInserted(mPets!!.size - 1)
+                    mPosts!!.add(addedItem)
+                    mAdapter.notifyItemInserted(mPosts!!.size - 1)
                 }
             }
 

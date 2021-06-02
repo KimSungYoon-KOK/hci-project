@@ -1,30 +1,144 @@
 # this is an auto generated file. This will be overwritten
-subscription OnCreatePet {
-  onCreatePet {
+subscription OnCreatePost {
+  onCreatePost {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
     createdAt
     updatedAt
   }
 }
-subscription OnUpdatePet {
-  onUpdatePet {
+subscription OnUpdatePost {
+  onUpdatePost {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
     createdAt
     updatedAt
   }
 }
-subscription OnDeletePet {
-  onDeletePet {
+subscription OnDeletePost {
+  onDeletePost {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnCreateComment {
+  onCreateComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+subscription OnUpdateComment {
+  onUpdateComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+subscription OnDeleteComment {
+  onDeleteComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
     createdAt
     updatedAt
   }

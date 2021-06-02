@@ -1,10 +1,10 @@
 {
-  "AppSyncApiName": "amplifyDatasource",
+  "AppSyncApiName": "hciproject",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": "false",
+  "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
     "Fn::GetAtt": [
-      "authhciprojectdd93c306",
+      "authhciprojectec2561a6",
       "Outputs.UserPoolId"
     ]
   }

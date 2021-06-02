@@ -1,21 +1,97 @@
 # this is an auto generated file. This will be overwritten
-query GetPet($id: ID!) {
-  getPet(id: $id) {
+query GetPost($id: ID!) {
+  getPost(id: $id) {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
     createdAt
     updatedAt
   }
 }
-query ListPets($filter: ModelPetFilterInput, $limit: Int, $nextToken: String) {
-  listPets(filter: $filter, limit: $limit, nextToken: $nextToken) {
+query ListPosts(
+  $filter: ModelPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      name
-      description
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
       photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    nextToken
+  }
+}
+query GetComment($id: ID!) {
+  getComment(id: $id) {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+query ListComments(
+  $filter: ModelCommentFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      postID
+      post {
+        id
+        title
+        uname
+        content
+        uploadLat
+        uploadLng
+        photo
+        createdAt
+        updatedAt
+      }
+      uname
+      content
       createdAt
       updatedAt
     }

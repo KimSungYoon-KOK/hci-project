@@ -1,39 +1,162 @@
 # this is an auto generated file. This will be overwritten
-mutation CreatePet(
-  $input: CreatePetInput!
-  $condition: ModelPetConditionInput
+mutation CreatePost(
+  $input: CreatePostInput!
+  $condition: ModelPostConditionInput
 ) {
-  createPet(input: $input, condition: $condition) {
+  createPost(input: $input, condition: $condition) {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
     createdAt
     updatedAt
   }
 }
-mutation UpdatePet(
-  $input: UpdatePetInput!
-  $condition: ModelPetConditionInput
+mutation UpdatePost(
+  $input: UpdatePostInput!
+  $condition: ModelPostConditionInput
 ) {
-  updatePet(input: $input, condition: $condition) {
+  updatePost(input: $input, condition: $condition) {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
     createdAt
     updatedAt
   }
 }
-mutation DeletePet(
-  $input: DeletePetInput!
-  $condition: ModelPetConditionInput
+mutation DeletePost(
+  $input: DeletePostInput!
+  $condition: ModelPostConditionInput
 ) {
-  deletePet(input: $input, condition: $condition) {
+  deletePost(input: $input, condition: $condition) {
     id
-    name
-    description
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
     photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+mutation CreateComment(
+  $input: CreateCommentInput!
+  $condition: ModelCommentConditionInput
+) {
+  createComment(input: $input, condition: $condition) {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+mutation UpdateComment(
+  $input: UpdateCommentInput!
+  $condition: ModelCommentConditionInput
+) {
+  updateComment(input: $input, condition: $condition) {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+mutation DeleteComment(
+  $input: DeleteCommentInput!
+  $condition: ModelCommentConditionInput
+) {
+  deleteComment(input: $input, condition: $condition) {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
     createdAt
     updatedAt
   }

@@ -34,7 +34,7 @@ import java.util.*
 import javax.annotation.Nonnull
 
 
-class AddPetActivity : AppCompatActivity() {
+class AddPostActivity : AppCompatActivity() {
 
     private val clientFactory = ClientFactory()
 
@@ -89,7 +89,7 @@ class AddPetActivity : AppCompatActivity() {
         object : GraphQLCall.Callback<CreatePetMutation.Data>() {
             override fun onResponse(response: Response<CreatePetMutation.Data>) {
                 runOnUiThread {
-                    Toast.makeText(this@AddPetActivity, "Added pet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddPostActivity, "Added pet", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
@@ -97,7 +97,7 @@ class AddPetActivity : AppCompatActivity() {
             override fun onFailure(@Nonnull e: ApolloException) {
                 runOnUiThread {
                     Log.e("", "Failed to perform AddPetMutation", e)
-                    Toast.makeText(this@AddPetActivity, "Failed to add pet", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@AddPostActivity, "Failed to add pet", Toast.LENGTH_SHORT)
                         .show()
                     finish()
                 }
@@ -227,7 +227,7 @@ class AddPetActivity : AppCompatActivity() {
                 Log.e("Uploading", "Failed to upload photo. ", ex)
                 runOnUiThread {
                     Toast.makeText(
-                        this@AddPetActivity,
+                        this@AddPostActivity,
                         "Failed to upload photo",
                         Toast.LENGTH_LONG
                     ).show()

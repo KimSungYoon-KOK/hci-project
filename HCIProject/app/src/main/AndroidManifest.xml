@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".testAmplify.AddPetActivity" />
+        <activity android:name=".testAmplify.AddPostActivity" />
         <activity android:name=".testAmplify.TestActivity"/>
 
 
