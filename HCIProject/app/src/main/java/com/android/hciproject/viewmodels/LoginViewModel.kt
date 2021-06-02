@@ -17,18 +17,4 @@ class LoginViewModel : ViewModel() {
             postValue(false)
         }
     }
-    val loading get() = _loading
-
-    val eventBit = MutableLiveData(0b00)
-
-    fun updateEvent(position: Int) {
-        val event = eventBit.value ?: 0
-        eventBit.value = event or position
-    }
-
-    fun login() {
-        val username = username.value
-        _loading.value = true
-    }
-
 }

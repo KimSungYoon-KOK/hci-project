@@ -1,30 +1,162 @@
 package com.android.hciproject.viewmodels
 
-import androidx.lifecycle.LiveData
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class SharedViewModel : ViewModel() {
+
+    var loginUserName = MutableLiveData<String>()
+
     var searchWord = MutableLiveData<String>()
-    private val _postList = MutableLiveData<ArrayList<Post>>()
-    val postList:LiveData<ArrayList<Post>> get() = _postList
-    var mLocationSource = MutableLiveData<FusedLocationSource>()
+
+    val postList = MutableLiveData<ArrayList<Post>>()
+
+    val latLng = MutableLiveData<LatLng>()
+
     var selectedPost = MutableLiveData<Post>()
+
+    val selectedOverlaySize = MutableLiveData<Double>().apply {
+        value = 1000.0
+    }
+
+    val address: MutableLiveData<String> by lazy {
+        MutableLiveData<String>().apply {
+            postValue("")
+        }
+    }
 
     init {
         viewModelScope.launch {
+            val comments = ArrayList<Comment>()
+            comments.add(Comment("uname", "content", "uplaodtime"))
+            comments.add(Comment("uname2", "content", "uplaodtime"))
+            comments.add(Comment("uname3", "content", "uplaodtime"))
+            comments.add(Comment("uname4", "content", "uplaodtime"))
             val list = ArrayList<Post>()
-            list.add(Post(1, "청심대", "img", "김성윤", "건국대학교의 청심대에요", "time", 37.54225941463205, 127.07629578159484,null))
-            list.add(Post(2, "일감호", "img", "김인애", "건국대학교의 일감호에요.", "2021.05.24.", 37.54125941463205, 127.07629578159484,null))
-            list.add(Post(4, "타이틀", "img", "박현우", "내용입니다", "time", 37.54725941463205, 127.07629578159484,null))
-            _postList.postValue(list)
+            val lat = LatLng(
+                37.54225941463205,
+                127.07629578159484
+            )
+            latLng.postValue(lat)
+            list.add(
+                Post(
+                    1,
+                    "청심대",
+                    "img",
+                    "김성윤",
+                    "건국대학교의 청심대에요",
+                    "1시간 전",
+                    37.54225941463205,
+                    127.07629578159484,
+                    comments,
+                    5
+                )
+            )
+            list.add(
+                Post(
+                    1,
+                    "먼곳",
+                    "img",
+                    "김성윤",
+                    "건국대학교의 청심대에요",
+                    "2시간 전",
+                    37.56725941463205,
+                    127.07649578159484,
+                    comments,
+                    5
+                )
+            )
+            list.add(
+                Post(
+                    2,
+                    "일감호",
+                    "img",
+                    "김인애",
+                    "건국대학교의 일감호에요.",
+                    "30분 전",
+                    37.54125941463205,
+                    127.07629578159484,
+                    comments,
+                    0
+                )
+            )
+            list.add(
+                Post(
+                    4,
+                    "타이틀",
+                    "img",
+                    "박현우",
+                    "내용입니다",
+                    "time",
+                    37.54725941463205,
+                    127.07629578159484,
+                    comments,
+                    0
+                )
+            )
+            postList.postValue(list)
 
             searchWord.value = ""
         }
 
+    }
+
+    fun selectPost(post: Post) {
+        viewModelScope.launch {
+            selectedPost.postValue(post)
+        }
+    }
+
+    fun fetchLoginUserName(name: String) {
+        viewModelScope.launch {
+            loginUserName.postValue(name)
+        }
+    }
+
+    fun fetchSharedData() {
+        viewModelScope.launch {
+            latLng.postValue(
+                LatLng(
+                    37.54225941463205,
+                    127.07629578159484
+                )
+            )
+        }
+    }
+
+    fun fetchTotalPostFromDb() {
+        viewModelScope.launch {
+            // post list 가져오기!
+        }
+    }
+
+    fun fetchAddressFromLocation(context: Context) {
+        var address: List<Address>? = null
+        val g = Geocoder(context)
+        try {
+            address = g.getFromLocation(latLng.value!!.latitude, latLng.value!!.longitude, 1)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.d("SharedViewModel", "입출력 오류")
+        }
+        if (address != null) {
+            var addr = address[0].getAddressLine(0)
+            if (addr.startsWith("대한민국 ")) {
+                addr = addr.replace("대한민국 ", "")
+            }
+            this.address.postValue(addr)
+        } else
+            this.address.postValue("위치를 입력하세요")
     }
 }

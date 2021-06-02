@@ -14,9 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App">
+        <activity
+            android:name=".ui.PostDetailActivity"
+            android:theme="@style/Theme.HCIProject"/>
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="4yjnfu2udm" />
+
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/Theme.HCIProject">

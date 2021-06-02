@@ -4,7 +4,6 @@ buildscript {
     ext.navigation_version = "2.2.0-rc04"
     repositories {
         google()
-        jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
@@ -21,7 +20,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         maven { url 'https://naver.jfrog.io/artifactory/maven/'}
         maven { url 'https://plugins.gradle.org/m2/' }
     }
