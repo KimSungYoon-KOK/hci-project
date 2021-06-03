@@ -6,11 +6,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.amplify.generated.graphql.CreatePostMutation
+import com.amazonaws.amplify.generated.graphql.DeletePostMutation
 import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import com.amazonaws.amplify.generated.graphql.OnCreatePostSubscription
+import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
 import com.android.hciproject.ClientFactory
@@ -19,6 +25,9 @@ import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import type.CreatePostInput
+import type.DeletePostInput
+import javax.annotation.Nonnull
 
 
 class TestActivity : AppCompatActivity() {
@@ -53,7 +62,7 @@ class TestActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-//        subscriptionWatcher.cancel()
+        subscriptionWatcher.cancel()
     }
 
     private fun query() {
@@ -100,25 +109,26 @@ class TestActivity : AppCompatActivity() {
         object : AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> {
             override fun onResponse(response: Response<OnCreatePostSubscription.Data>) {
                 Log.i("Subscription", response.data().toString())
-
-                // Update UI with the newly added item
-                val data = response.data()!!.onCreatePost()
-                val addedItem = ListPostsQuery.Item(
-                    data!!.__typename(),
-                    data.id(),
-                    data.title(),
-                    data.uname(),
-                    data.content(),
-                    data.uploadLat(),
-                    data.uploadLng(),
-                    data.photo(),
-                    null,
-                    data.createdAt(),
-                    data.updatedAt()
-                )
-                runOnUiThread {
-                    mPosts!!.add(addedItem)
-                    mAdapter.notifyItemInserted(mPosts!!.size - 1)
+                if (response.data() != null) {
+                    // Update UI with the newly added item
+                    val data = response.data()!!.onCreatePost()
+                    val addedItem = ListPostsQuery.Item(
+                        data!!.__typename(),
+                        data.id(),
+                        data.title(),
+                        data.uname(),
+                        data.content(),
+                        data.uploadLat(),
+                        data.uploadLng(),
+                        data.photo(),
+                        null,
+                        data.createdAt(),
+                        data.updatedAt()
+                    )
+                    runOnUiThread {
+                        mPosts!!.add(addedItem)
+                        mAdapter.notifyItemInserted(mPosts!!.size - 1)
+                    }
                 }
             }
 
@@ -132,6 +142,41 @@ class TestActivity : AppCompatActivity() {
         }
 
 
+    fun remove() {
+        val input = getDeletePostInput()
+        val removePostMutation = DeletePostMutation.builder()
+            .input(input)
+            .build()
+
+        clientFactory.appSyncClient()
+            .mutate(removePostMutation)
+            .refetchQueries(ListPostsQuery.builder().build())
+            .enqueue(mutateCallback)
+    }
+
+    private fun getDeletePostInput(): DeletePostInput {
+
+    }
+
+    // Mutation callback code
+    private val mutateCallback: GraphQLCall.Callback<DeletePostMutation.Data> =
+        object : GraphQLCall.Callback<DeletePostMutation.Data>() {
+            override fun onResponse(response: Response<DeletePostMutation.Data>) {
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "Deleted post", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            override fun onFailure(@Nonnull e: ApolloException) {
+                runOnUiThread {
+                    Log.e("", "Failed to perform AddPetMutation", e)
+                    Toast.makeText(applicationContext, "Failed to deleted post", Toast.LENGTH_SHORT)
+                        .show()
+                    finish()
+                }
+            }
+        }
 }
 
 

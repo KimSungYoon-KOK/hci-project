@@ -61,7 +61,7 @@ class AddPostActivity : AppCompatActivity() {
         // 캐시 파일 삭제
         try {
             val cacheFile = cacheDir // 내부저장소 캐시 경로를 받아오기
-            val flist = cacheFile.listFiles()
+            val flist = cacheFile.listFiles()!!
             for (i in flist.indices) {    // 배열의 크기만큼 반복
                 flist[i].delete() // 파일 삭제
             }
@@ -75,7 +75,7 @@ class AddPostActivity : AppCompatActivity() {
         val input = getCreatePostInput()
 
         val addPostMutation = CreatePostMutation.builder()
-            .input(input!!)
+            .input(input)
             .build()
 
         clientFactory.appSyncClient()
@@ -90,7 +90,7 @@ class AddPostActivity : AppCompatActivity() {
         object : GraphQLCall.Callback<CreatePostMutation.Data>() {
             override fun onResponse(response: Response<CreatePostMutation.Data>) {
                 runOnUiThread {
-                    Toast.makeText(this@AddPostActivity, "Added pet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddPostActivity, "Added post", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
@@ -98,7 +98,7 @@ class AddPostActivity : AppCompatActivity() {
             override fun onFailure(@Nonnull e: ApolloException) {
                 runOnUiThread {
                     Log.e("", "Failed to perform AddPetMutation", e)
-                    Toast.makeText(this@AddPostActivity, "Failed to add pet", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@AddPostActivity, "Failed to add post", Toast.LENGTH_SHORT)
                         .show()
                     finish()
                 }
@@ -237,7 +237,7 @@ class AddPostActivity : AppCompatActivity() {
         })
     }
 
-    private fun getCreatePostInput(): CreatePostInput? {
+    private fun getCreatePostInput(): CreatePostInput {
         val title = (findViewById<View>(R.id.editTxt_name) as EditText).text.toString()
         val content = (findViewById<View>(R.id.editText_description) as EditText).text.toString()
         val uname = AWSMobileClient.getInstance().username.toString()
