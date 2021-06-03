@@ -8,6 +8,7 @@ query GetPost($id: ID!) {
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -37,6 +38,7 @@ query ListPosts(
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -58,6 +60,7 @@ query GetComment($id: ID!) {
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -87,6 +90,7 @@ query ListComments(
         uploadLat
         uploadLng
         photo
+        likes
         createdAt
         updatedAt
       }

@@ -11,6 +11,7 @@ mutation CreatePost(
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -38,6 +39,7 @@ mutation UpdatePost(
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -65,6 +67,7 @@ mutation DeletePost(
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -95,6 +98,7 @@ mutation CreateComment(
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -122,6 +126,7 @@ mutation UpdateComment(
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -149,6 +154,7 @@ mutation DeleteComment(
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }

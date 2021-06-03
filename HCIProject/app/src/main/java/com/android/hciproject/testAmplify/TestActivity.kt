@@ -48,12 +48,12 @@ class TestActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         query()
-        subscribe()
+//        subscribe()
     }
 
     override fun onStop() {
         super.onStop()
-        subscriptionWatcher.cancel()
+//        subscriptionWatcher.cancel()
     }
 
     private fun query() {
@@ -88,49 +88,9 @@ class TestActivity : AppCompatActivity() {
 
 
     // 구독 및 알람
-    private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePostSubscription.Data>
 
-    private fun subscribe() {
-        val subscription: OnCreatePostSubscription = OnCreatePostSubscription.builder().build()
-        subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
-        subscriptionWatcher.execute(subCallback)
-    }
 
-    private val subCallback: AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> =
-        object : AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> {
-            override fun onResponse(response: Response<OnCreatePostSubscription.Data>) {
-                Log.i("Subscription", response.data().toString())
-                if (response.data() != null) {
-                    // Update UI with the newly added item
-                    val data = response.data()!!.onCreatePost()
-                    val addedItem = ListPostsQuery.Item(
-                        data!!.__typename(),
-                        data.id(),
-                        data.title(),
-                        data.uname(),
-                        data.content(),
-                        data.uploadLat(),
-                        data.uploadLng(),
-                        data.photo(),
-                        null,
-                        data.createdAt(),
-                        data.updatedAt()
-                    )
-                    runOnUiThread {
-                        mPosts!!.add(addedItem)
-                        mAdapter.notifyItemInserted(mPosts!!.size - 1)
-                    }
-                }
-            }
 
-            override fun onFailure(e: ApolloException) {
-                Log.e("Subscription", e.toString())
-            }
-
-            override fun onCompleted() {
-                Log.i("Subscription", "Subscription completed")
-            }
-        }
 
 
 //    fun remove() {

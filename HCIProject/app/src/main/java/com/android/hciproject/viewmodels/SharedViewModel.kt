@@ -1,5 +1,6 @@
 package com.android.hciproject.viewmodels
 
+import android.content.ContentValues
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
@@ -7,8 +8,16 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.amplify.generated.graphql.OnCreatePostSubscription
+import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
+import com.apollographql.apollo.GraphQLCall
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
@@ -20,11 +29,11 @@ class SharedViewModel : ViewModel() {
 
     var searchWord = MutableLiveData<String>()
 
-    val postList = MutableLiveData<ArrayList<Post>>()
+    val postList = MutableLiveData<ArrayList<ListPostsQuery.Item>>()
 
     val latLng = MutableLiveData<LatLng>()
 
-    var selectedPost = MutableLiveData<Post>()
+    var selectedPost = MutableLiveData<ListPostsQuery.Item>()
 
     val selectedOverlaySize = MutableLiveData<Double>().apply {
         value = 1000.0
@@ -49,64 +58,6 @@ class SharedViewModel : ViewModel() {
                 127.07629578159484
             )
             latLng.postValue(lat)
-            list.add(
-                Post(
-                    1,
-                    "청심대",
-                    "img",
-                    "김성윤",
-                    "건국대학교의 청심대에요",
-                    "1시간 전",
-                    37.54225941463205,
-                    127.07629578159484,
-                    comments,
-                    5
-                )
-            )
-            list.add(
-                Post(
-                    1,
-                    "먼곳",
-                    "img",
-                    "김성윤",
-                    "건국대학교의 청심대에요",
-                    "2시간 전",
-                    37.56725941463205,
-                    127.07649578159484,
-                    comments,
-                    5
-                )
-            )
-            list.add(
-                Post(
-                    2,
-                    "일감호",
-                    "img",
-                    "김인애",
-                    "건국대학교의 일감호에요.",
-                    "30분 전",
-                    37.54125941463205,
-                    127.07629578159484,
-                    comments,
-                    0
-                )
-            )
-            list.add(
-                Post(
-                    4,
-                    "타이틀",
-                    "img",
-                    "박현우",
-                    "내용입니다",
-                    "time",
-                    37.54725941463205,
-                    127.07629578159484,
-                    comments,
-                    0
-                )
-            )
-            postList.postValue(list)
-
             searchWord.value = ""
         }
 
@@ -114,7 +65,7 @@ class SharedViewModel : ViewModel() {
 
     fun selectPost(post: Post) {
         viewModelScope.launch {
-            selectedPost.postValue(post)
+//            selectedPost.postValue(post)
         }
     }
 
@@ -159,4 +110,73 @@ class SharedViewModel : ViewModel() {
         } else
             this.address.postValue("위치를 입력하세요")
     }
+
+    fun fetchDB(clientFactory: ClientFactory) {
+        viewModelScope.launch {
+            clientFactory.appSyncClient()
+                .query(ListPostsQuery.builder().build())
+                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+                .enqueue(queryCallback)
+
+            subscribe(clientFactory)
+
+            if(postList.value.isNullOrEmpty())
+                Log.d("postListSize","null")
+        }
+    }
+
+    private val queryCallback: GraphQLCall.Callback<ListPostsQuery.Data> =
+        object : GraphQLCall.Callback<ListPostsQuery.Data>() {
+            override fun onResponse(response: Response<ListPostsQuery.Data>) {
+                postList.postValue(ArrayList(response.data()?.listPosts()?.items()))
+            }
+
+            override fun onFailure(e: ApolloException) {
+                Log.e(ContentValues.TAG, e.toString())
+            }
+        }
+
+    private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePostSubscription.Data>
+
+    fun subscribe(clientFactory: ClientFactory) {
+        val subscription: OnCreatePostSubscription = OnCreatePostSubscription.builder().build()
+        subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
+        subscriptionWatcher.execute(subCallback)
+    }
+
+    private val subCallback: AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> =
+        object : AppSyncSubscriptionCall.Callback<OnCreatePostSubscription.Data> {
+            override fun onResponse(response: Response<OnCreatePostSubscription.Data>) {
+                Log.i("Subscription", response.data().toString())
+                if (response.data() != null) {
+                    // Update UI with the newly added item
+                    val data = response.data()!!.onCreatePost()
+                    val addedItem = ListPostsQuery.Item(
+                        data!!.__typename(),
+                        data.id(),
+                        data.title(),
+                        data.uname(),
+                        data.content(),
+                        data.uploadLat(),
+                        data.uploadLng(),
+                        data.photo(),
+                        data.likes(),
+                        null,
+                        data.createdAt(),
+                        data.updatedAt()
+                    )
+                    viewModelScope.launch {
+                        postList.value?.add(addedItem)
+                    }
+                }
+            }
+
+            override fun onFailure(e: ApolloException) {
+                Log.e("Subscription", e.toString())
+            }
+
+            override fun onCompleted() {
+                Log.i("Subscription", "Subscription completed")
+            }
+        }
 }

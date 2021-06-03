@@ -6,6 +6,7 @@ type Post @model {
   uploadLat: String
   uploadLng: String
   photo: String
+  likes: Int
   comments: [Comment] @connection(keyName: "byPost", fields: ["id"])
 }
 

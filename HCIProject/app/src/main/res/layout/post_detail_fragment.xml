@@ -83,7 +83,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{sharedViewModel.selectedPost.title}"
+                        android:text="@{sharedViewModel.selectedPost.title()}"
                         android:textColor="@color/primaryTextColor"
                         android:textStyle="bold" />
 
@@ -96,13 +96,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@{sharedViewModel.selectedPost.uname}"
+                            android:text="@{sharedViewModel.selectedPost.uname()}"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{sharedViewModel.selectedPost.uploadTime}"
+                            android:text="@{sharedViewModel.selectedPost.updatedAt}"
                             android:textColor="@color/primaryTextColor" />
                     </LinearLayout>
 
@@ -140,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="@{sharedViewModel.selectedPost.content}"
+                    android:text="@{sharedViewModel.selectedPost.content()}"
                     android:textColor="@color/primaryTextColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +150,6 @@
                     android:id="@+id/recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bind_visibility="@{sharedViewModel.selectedPost.comments}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/content" />
