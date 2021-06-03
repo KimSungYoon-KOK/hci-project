@@ -33,6 +33,10 @@
         <activity android:name=".testAmplify.TestActivity"/>
 
 
+        <activity
+            android:name=".ui.PostDetailActivity"
+            android:theme="@style/Theme.HCIProject"/>
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="4yjnfu2udm" />

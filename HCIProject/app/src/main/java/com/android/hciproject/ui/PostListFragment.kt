@@ -1,16 +1,21 @@
 package com.android.hciproject.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.hciproject.R
+import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.adapters.PostAdapter
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.PostListFragmentBinding
@@ -40,6 +45,7 @@ class PostListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setOnClickListener()
         setPostAdapter()
+        observePostList()
     }
 
     private fun setOnClickListener() {
@@ -51,17 +57,35 @@ class PostListFragment : Fragment() {
     private fun setPostAdapter() {
         binding.recyclerview.layoutManager = LinearLayoutManager(context)
         binding.recyclerview.addItemDecoration(
-            DividerItemDecoration(context, 1)
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
         )
-        val adapter = PostAdapter(sharedViewModel.postList.value!!)
+        val adapter = PostAdapter()
         adapter.itemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onItemClick(post: Post) {
                 sharedViewModel.selectedPost.value = post
-                findNavController().navigate(R.id.action_postListFragment_to_postDetailFragment)
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                Log.d("PostListFragment", post.toString())
+                intent.putExtra("post", post)
+                startActivity(intent)
             }
         }
         binding.recyclerview.adapter = adapter
     }
 
+    private fun observePostList(){
+        sharedViewModel.postList.observe(viewLifecycleOwner, Observer {
+            if(it == null)
+                return@Observer
+
+            // Update comments recyclerview.
+            val recyclerView = binding.recyclerview
+            val adapter = recyclerView.adapter as PostAdapter
+            if (!it.isNullOrEmpty())
+                adapter.submitList(it.toMutableList())
+        })
+    }
 
 }

@@ -1,13 +1,15 @@
 name: Android CI
-# apk 파일을 생성하는 workflow 스크립트
+
 on:
   push:
     branches:
       - master
       - develop
+      - dev-inae
   pull_request:
     branches:
       - develop
+      - dev-inae
 
 jobs:
   apk:

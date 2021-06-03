@@ -52,4 +52,11 @@
     <color name="greenColor600">#27AE60</color>
     <color name="greenColor700">#229954</color>
     <color name="greenColor800">#1E8449</color>
+
+    <color name="grayColor100">#F8F9F9</color>
+    <color name="grayColor200">#F2F3F4</color>
+    <color name="grayColor300">#E5E7E9</color>
+    <color name="grayColor400">#D7DBDD</color>
+    <color name="grayColor500">#CACFD2</color>
+
 </resources>
