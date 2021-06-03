@@ -1,0 +1,145 @@
+# this is an auto generated file. This will be overwritten
+subscription OnCreatePost {
+  onCreatePost {
+    id
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
+    photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnUpdatePost {
+  onUpdatePost {
+    id
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
+    photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnDeletePost {
+  onDeletePost {
+    id
+    title
+    uname
+    content
+    uploadLat
+    uploadLng
+    photo
+    comments {
+      items {
+        id
+        postID
+        uname
+        content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnCreateComment {
+  onCreateComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+subscription OnUpdateComment {
+  onUpdateComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}
+subscription OnDeleteComment {
+  onDeleteComment {
+    id
+    postID
+    post {
+      id
+      title
+      uname
+      content
+      uploadLat
+      uploadLng
+      photo
+      comments {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    uname
+    content
+    createdAt
+    updatedAt
+  }
+}

@@ -1,0 +1,18 @@
+type Post @model {
+  id: ID!
+  title: String!
+  uname: String
+  content: String
+  uploadLat: String
+  uploadLng: String
+  photo: String
+  comments: [Comment] @connection(keyName: "byPost", fields: ["id"])
+}
+
+type Comment @model @key(name: "byPost", fields: ["postID", "content"]) {
+  id: ID!
+  postID: ID!
+  post: Post @connection(fields: ["postID"])
+  uname: String
+  content: String!
+}
