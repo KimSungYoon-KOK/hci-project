@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.*
-import com.android.hciproject.R
 import com.android.hciproject.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), LoginInterface{
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity(), LoginInterface{
         setContentView(binding.root)
     }
 
-    override fun test() {
+    override fun authenticate() {
         AWSMobileClient.getInstance()
             .initialize(this, object : Callback<UserStateDetails?> {
                 override fun onResult(userStateDetails: UserStateDetails?) {
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity(), LoginInterface{
                         Log.i("UserStateDetail", userStateDetails.userState.toString())
                         when (userStateDetails.userState) {
                             UserState.SIGNED_IN -> {
-                                findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+//                                findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
                             }
                             UserState.SIGNED_OUT -> showSignIn()
                             else -> {

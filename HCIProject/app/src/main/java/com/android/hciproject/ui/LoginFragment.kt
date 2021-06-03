@@ -5,20 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.UserState
 import com.android.hciproject.R
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.android.hciproject.R
-import com.android.hciproject.databinding.LoginFragmentBinding
-import com.android.hciproject.viewmodels.LoginViewModel
-import com.android.hciproject.viewmodels.SharedViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class LoginFragment : Fragment() {
 
@@ -35,7 +22,6 @@ class LoginFragment : Fragment() {
 //         binding.lifecycleOwner = this
 //         binding.sharedViewModel = sharedViewModel
 //         return binding.root
-
         return inflater.inflate(R.layout.login_fragment, container, false)
     }
 
@@ -44,6 +30,7 @@ class LoginFragment : Fragment() {
         //setOnClickListener()
 
         //AWS Login
+        (activity as LoginInterface).authenticate()
     }
 
 //     private fun setOnClickListener() {
