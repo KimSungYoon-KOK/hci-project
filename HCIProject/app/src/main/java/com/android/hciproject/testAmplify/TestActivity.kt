@@ -74,7 +74,7 @@ class TestActivity : AppCompatActivity() {
         object : GraphQLCall.Callback<ListPostsQuery.Data>() {
             override fun onResponse(response: Response<ListPostsQuery.Data>) {
                 mPosts = ArrayList(response.data()?.listPosts()?.items())
-                Log.i(TAG, "Retrieved list items: $mPosts")
+                Log.i("Retrieved list items", "$mPosts")
                 runOnUiThread {
                     mAdapter.setItems(mPosts!!)
                     mAdapter.notifyDataSetChanged()

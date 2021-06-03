@@ -24,7 +24,7 @@ class MyAdapter(val clientFactory: ClientFactory)
 
     lateinit var context: Context
     private var mData: List<ListPostsQuery.Item> = ArrayList()
-    var localUrl: String? = null
+//    var localUrl: String? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,12 +42,16 @@ class MyAdapter(val clientFactory: ClientFactory)
             txt_title.text = "${item.title()}, uname: ${item.uname()}"
             txt_content.text = item.content()
             if (item.photo() != null) {
-                if (localUrl == null) {
-                    downloadWithTransferUtility(item.photo()!!)
-                } else {
-                    image_view.setImageBitmap(BitmapFactory.decodeFile(localUrl))
-                }
-            } else image_view.setImageBitmap(null)
+                Log.i("Retrieved PhotoUrl", "${item.title()}, ${item.photo()}")
+                downloadWithTransferUtility(item.photo()!!)
+//                if (localUrl == null) {
+//
+//                } else {
+//                    image_view.setImageBitmap(BitmapFactory.decodeFile(localUrl))
+//                }
+            } else {
+                image_view.setImageBitmap(null)
+            }
         }
 
         private fun downloadWithTransferUtility(photo: String) {
@@ -65,7 +69,7 @@ class MyAdapter(val clientFactory: ClientFactory)
                 override fun onStateChanged(id: Int, state: TransferState) {
                     if (TransferState.COMPLETED == state) {
                         // Handle a completed upload.
-                        localUrl = localPath
+//                        localUrl = localPath
                         image_view.setImageBitmap(BitmapFactory.decodeFile(localPath))
                     }
                 }
