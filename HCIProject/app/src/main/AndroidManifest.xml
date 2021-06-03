@@ -28,10 +28,6 @@
         <activity
             android:name=".testAmplify.AuthenticationActivity"
             android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".testAmplify.AddPostActivity" />
         <activity android:name=".testAmplify.TestActivity"/>
@@ -43,7 +39,13 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/Theme.HCIProject"></activity>
+            android:noHistory="true"
+            android:theme="@style/Theme.HCIProject">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
