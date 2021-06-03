@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
 import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.adapters.PostAdapter
@@ -28,6 +30,7 @@ class PostListFragment : Fragment() {
     private var _binding: PostListFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: PostListViewModel
+    private val clientFactory = ClientFactory()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +46,14 @@ class PostListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setOnClickListener()
         setPostAdapter()
         observePostList()
+    }
+
+    private fun init() {
+        clientFactory.init(requireContext())
     }
 
     private fun setOnClickListener() {
@@ -62,22 +70,23 @@ class PostListFragment : Fragment() {
                 LinearLayoutManager.VERTICAL
             )
         )
-        val adapter = PostAdapter()
+        val adapter = PostAdapter(clientFactory)
         adapter.itemClickListener = object : PostAdapter.OnItemClickListener {
-            override fun onItemClick(post: Post) {
+            override fun onItemClick(post: ListPostsQuery.Item) {
                 sharedViewModel.selectedPost.value = post
                 val intent = Intent(requireContext(), PostDetailActivity::class.java)
                 Log.d("PostListFragment", post.toString())
-                intent.putExtra("post", post)
+                val tempPost = Post(post)
+                intent.putExtra("post", tempPost)
                 startActivity(intent)
             }
         }
         binding.recyclerview.adapter = adapter
     }
 
-    private fun observePostList(){
+    private fun observePostList() {
         sharedViewModel.postList.observe(viewLifecycleOwner, Observer {
-            if(it == null)
+            if (it == null)
                 return@Observer
 
             // Update comments recyclerview.

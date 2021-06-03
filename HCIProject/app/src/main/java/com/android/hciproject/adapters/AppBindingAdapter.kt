@@ -5,6 +5,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 
@@ -17,7 +18,7 @@ fun ProgressBar.bindVisibility(loading: Boolean) {
 }
 
 @BindingAdapter("bind_visibility")
-fun RecyclerView.bindPostsVisibility(posts: List<Post>) {
+fun RecyclerView.bindPostsVisibility(posts: List<ListPostsQuery.Item>) {
     if (posts.isNullOrEmpty()) View.GONE else View.VISIBLE
 }
 

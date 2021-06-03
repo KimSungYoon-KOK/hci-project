@@ -4,33 +4,22 @@ import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.amazonaws.mobile.client.*
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), LoginInterface{
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-    }
 
-    override fun authenticate() {
         AWSMobileClient.getInstance()
             .initialize(this, object : Callback<UserStateDetails?> {
                 override fun onResult(userStateDetails: UserStateDetails?) {
-                    if (userStateDetails != null) {
-                        Log.i("UserStateDetail", userStateDetails.userState.toString())
-                        when (userStateDetails.userState) {
-                            UserState.SIGNED_IN -> {
-//                                findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-                            }
-                            UserState.SIGNED_OUT -> showSignIn()
-                            else -> {
-                                AWSMobileClient.getInstance().signOut()
-                                showSignIn()
-                            }
-                        }
+                    Log.d("onResult", userStateDetails!!.userState.toString())
+                    if (userStateDetails.userState == UserState.SIGNED_OUT) {
+                        showSignIn()
                     }
                 }
 
@@ -38,6 +27,11 @@ class MainActivity : AppCompatActivity(), LoginInterface{
                     Log.e(ContentValues.TAG, e.toString())
                 }
             })
+
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
     }
 
     private fun showSignIn() {

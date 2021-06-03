@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-hciproject-dev-10216-unauthRole",
       "StackName": "amplify-hciproject-dev-10216",
       "StackId": "arn:aws:cloudformation:ap-northeast-2:522290116725:stack/amplify-hciproject-dev-10216/e92b6cd0-c3bb-11eb-8fae-0270362d239e",
-      "AmplifyAppId": "dbhnmln6g4t7y"
+      "AmplifyAppId": "dbhnmln6g4t7y",
+      "AuthTriggerTemplateURL": ""
     },
     "categories": {
       "auth": {

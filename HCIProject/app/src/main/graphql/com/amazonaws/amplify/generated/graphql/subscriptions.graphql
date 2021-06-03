@@ -8,6 +8,7 @@ subscription OnCreatePost {
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -32,6 +33,7 @@ subscription OnUpdatePost {
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -56,6 +58,7 @@ subscription OnDeletePost {
     uploadLat
     uploadLng
     photo
+    likes
     comments {
       items {
         id
@@ -83,6 +86,7 @@ subscription OnCreateComment {
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -107,6 +111,7 @@ subscription OnUpdateComment {
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }
@@ -131,6 +136,7 @@ subscription OnDeleteComment {
       uploadLat
       uploadLng
       photo
+      likes
       comments {
         nextToken
       }

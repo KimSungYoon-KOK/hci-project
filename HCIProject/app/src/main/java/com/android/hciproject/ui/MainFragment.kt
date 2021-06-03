@@ -36,6 +36,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getSystemService
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.data.Post
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -57,6 +60,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private lateinit var postMarkers: ArrayList<Marker>
     private lateinit var infoWindow:InfoWindow
     private lateinit var polyLine:PolylineOverlay
+    private val clientFactory = ClientFactory()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +75,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initDB()
         init()
         requestPermission()
         initMapFragment()
@@ -78,7 +83,12 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         setSearchListener()
     }
 
-    fun init() {
+    private fun initDB(){
+        clientFactory.init(requireContext())
+        sharedViewModel.fetchDB(clientFactory)
+    }
+
+    private fun init() {
         postMarkers = ArrayList()
         infoWindow = InfoWindow()
         polyLine = PolylineOverlay()
@@ -104,7 +114,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    searchPost(query)
+//                    searchPost(query)
                 }
                 hideKeyboard()
                 return true
@@ -122,14 +132,14 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         imm.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
     }
 
-    private fun searchPost(query: String) {
-        deleteMarker()
-        for (post in sharedViewModel.postList.value!!) {
-            if (post.title.contains(query) || post.content.contains(query)) {
-                addMarker(post)
-            }
-        }
-    }
+//    private fun searchPost(query: String) {
+//        deleteMarker()
+//        for (post in sharedViewModel.postList.value!!) {
+//            if (post.title.contains(query) || post.content.contains(query)) {
+//                addMarker(post)
+//            }
+//        }
+//    }
 
     private fun requestPermission() {
         val requestPermissionLauncher =
@@ -246,50 +256,53 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun makeMarker() {
-        for (post in sharedViewModel.postList.value!!) {
-            val listener = Overlay.OnClickListener { overlay ->
-                val postLatLng = LatLng(post.uploadLat, post.uploadLng)
-                val marker = overlay as Marker
-                infoWindow.adapter = object : InfoWindow.DefaultViewAdapter(requireContext()) {
-                    override fun getContentView(p0: InfoWindow): View {
-                        val v = layoutInflater.inflate(
-                            R.layout.infowindow_item,
-                            binding.container,
-                            false
-                        )
-                        v.findViewById<TextView>(R.id.title).text = post.title
-                        v.findViewById<TextView>(R.id.distance).text = LocationUtils.distanceToText(
-                            LocationUtils.getDistance(
-                                naverMap.locationOverlay.position,
-                                postLatLng
+        sharedViewModel.postList.observe(this, androidx.lifecycle.Observer {
+            for (post in it) {
+                val listener = Overlay.OnClickListener { overlay ->
+                    val postLatLng = LatLng(post.uploadLat()!!.toDouble(),post.uploadLng()!!.toDouble())
+                    val marker = overlay as Marker
+                    infoWindow.adapter = object : InfoWindow.DefaultViewAdapter(requireContext()) {
+                        override fun getContentView(p0: InfoWindow): View {
+                            val v = layoutInflater.inflate(
+                                R.layout.infowindow_item,
+                                binding.container,
+                                false
                             )
-                        )
-                        return v
+                            v.findViewById<TextView>(R.id.title).text = post.title()
+                            v.findViewById<TextView>(R.id.distance).text = LocationUtils.distanceToText(
+                                LocationUtils.getDistance(
+                                    naverMap.locationOverlay.position,
+                                    postLatLng
+                                )
+                            )
+                            return v
+                        }
+
+                    }
+                    if (marker.infoWindow == null) {
+                        // 정보 창이 열려있지 않은 경우
+                        infoWindow.open(marker)
+                        drawPolyLine(postLatLng)
+                    } else {
+                        // 정보 창이 열려있는 경우
+                        //infoWindow.close()
+                        val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                        Log.d("MainFragment", post.toString())
+                        val tempPost = Post(post)
+                        intent.putExtra("post",tempPost)
+                        startActivity(intent)
                     }
 
-                }
-                if (marker.infoWindow == null) {
-                    // 정보 창이 열려있지 않은 경우
-                    infoWindow.open(marker)
-                    drawPolyLine(postLatLng)
-                } else {
-                    // 정보 창이 열려있는 경우
-                    //infoWindow.close()
-                    val intent = Intent(requireContext(), PostDetailActivity::class.java)
-                    Log.d("MainFragment", post.toString())
-                    intent.putExtra("post", post)
-                    startActivity(intent)
+                    true
                 }
 
-                true
+                val postMarker = Marker(LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble()))
+                postMarker.onClickListener = listener
+                postMarker.map = naverMap
+
+                postMarkers.add(postMarker)
             }
-
-            val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
-            postMarker.onClickListener = listener
-            postMarker.map = naverMap
-
-            postMarkers.add(postMarker)
-        }
+        })
     }
 
     private fun drawPolyLine(latLng: LatLng) {
@@ -303,22 +316,23 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         polyLine.map = naverMap
     }
 
-    private fun addMarker(post: Post) {
+    private fun addMarker(post: ListPostsQuery.Item) {
         val listener = Overlay.OnClickListener { overlay ->
             sharedViewModel.selectedPost.value = post
             val intent = Intent(requireContext(), PostDetailActivity::class.java)
             Log.d("MainFragment", post.toString())
-            intent.putExtra("post", post)
+            val tempPost = Post(post)
+            intent.putExtra("post", tempPost)
             startActivity(intent)
             true
         }
         val infoWindow = InfoWindow()
         infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
             override fun getText(infoWindow: InfoWindow): CharSequence {
-                return post.title
+                return post.title()
             }
         }
-        val postMarker = Marker(LatLng(post.uploadLat, post.uploadLng))
+        val postMarker = Marker(LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble()))
         postMarker.onClickListener = listener
         postMarker.map = naverMap
         infoWindow.open(postMarker)
@@ -330,9 +344,5 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         for (m in postMarkers)
             m.map = null
         postMarkers.clear()
-
-
     }
-
-
 }

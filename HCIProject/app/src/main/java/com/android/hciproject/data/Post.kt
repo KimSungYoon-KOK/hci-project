@@ -1,22 +1,37 @@
 package com.android.hciproject.data
 
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import java.io.Serializable
 
 data class Post(
-    val pid: Int,
-    val title: String,
-    val img: String,
-    val uname: String,
-    val content: String,
-    val uploadTime: String,
-    val uploadLat: Double,
-    val uploadLng: Double,
+    var pid: String,
+    var title: String,
+    var img: String?,
+    var uname: String?,
+    var content: String?,
+    var uploadTime: String?,
+    var uploadLat: Double?,
+    var uploadLng: Double?,
     var comments: ArrayList<Comment>?,
     var like: Int
 ) : Serializable {
-    constructor() : this(1, "title", "img", "uname", "content", "time", 0.0, 0.0, null, 0)
+    constructor() : this("id", "title", "img", "uname", "content", "time", 0.0, 0.0, null, 0)
 
     fun getLikeNumToString(): String {
         return like.toString()
+    }
+
+    constructor(p: ListPostsQuery.Item) : this() {
+        pid = p.id()
+        title = p.title()
+        img = p.photo()
+        uname = p.uname()
+        content = p.content()
+        uploadTime = p.updatedAt()
+        uploadLat = p.uploadLat()!!.toDouble()
+        uploadLng = p.uploadLng()!!.toDouble()
+        like = 5
+//        like = p.likes()
+        comments = null
     }
 }
