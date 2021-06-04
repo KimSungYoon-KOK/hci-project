@@ -9,9 +9,9 @@
             name="sharedViewModel"
             type="com.android.hciproject.viewmodels.SharedViewModel" />
 
-<!--        <variable-->
-<!--            name="viewModel"-->
-<!--            type="com.android.hciproject.viewmodels.PostDetailViewModel" />-->
+        <!--        <variable-->
+        <!--            name="viewModel"-->
+        <!--            type="com.android.hciproject.viewmodels.PostDetailViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -114,7 +114,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/konkuk"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/titleBar" />
