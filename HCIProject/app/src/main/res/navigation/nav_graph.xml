@@ -78,16 +78,6 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true" />
-
-        <action
-            android:id="@+id/action_mainFragment_to_postDetailFragment"
-            app:destination="@id/postDetailFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/mainFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -102,15 +92,6 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left"
-            app:popUpTo="@id/postListFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_postListFragment_to_postDetailFragment"
-            app:destination="@id/postDetailFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/postListFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -140,20 +121,6 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/postDetailFragment"
-        android:name="com.android.hciproject.ui.PostDetailFragment"
-        android:label="PostDetailFragment">
-        <action
-            android:id="@+id/action_postDetailFragmnet_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left"
-            app:popUpTo="@id/postDetailFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
     <fragment
         android:id="@+id/writeContentFragment"
         android:name="com.android.hciproject.ui.WriteContentFragment"
