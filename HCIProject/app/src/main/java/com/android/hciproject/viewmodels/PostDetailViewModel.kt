@@ -16,7 +16,11 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
-    fun insertComment(comment: Comment){
+    fun getPid(): String? {
+        return post.value?.pid
+    }
+
+    fun insertComment(comment: Comment) {
         // insert 구현
     }
 }

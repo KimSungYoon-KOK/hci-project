@@ -30,8 +30,7 @@ data class Post(
         uploadTime = p.updatedAt()
         uploadLat = p.uploadLat()!!.toDouble()
         uploadLng = p.uploadLng()!!.toDouble()
-        like = 5
-//        like = p.likes()
+        like = p.likes()!!
         comments = null
     }
 }
