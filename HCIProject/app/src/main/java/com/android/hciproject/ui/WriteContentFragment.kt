@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.hciproject.R
 import com.android.hciproject.data.Post
@@ -16,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class WriteContentFragment : Fragment() {
 
-    private lateinit var viewModel: WriteContentViewModel
+    private val viewModel: WriteContentViewModel by viewModels()
     private var _binding: WriteContentFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -25,7 +26,6 @@ class WriteContentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = WriteContentViewModel()
         _binding = WriteContentFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -35,6 +35,9 @@ class WriteContentFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel.fetchUserName(sharedViewModel.loginUserName.value!!)
+        viewModel.fetchLatLng(sharedViewModel.latLng.value!!)
+        //viewModel.fetchImageUri(sharedViewModel.writingPostImageUri.value!!)
         setOnClickListener()
     }
 
@@ -50,11 +53,16 @@ class WriteContentFragment : Fragment() {
     }
 
     private fun uploadPost() {
-        val p = Post()
-        viewModel.insertPost(p)
+
+        // viewModel.username, viewModel.content, viewModel.title, viewModel.uploadLatLng, 로 포스트 추가하면 됨
+        //ex)
+        val username = viewModel.username.value!!
+        val title = viewModel.title.value!!
+        val content = viewModel.content.value!!
+        val uploadLatLng = viewModel.uploadLatLng.value!!
         Snackbar.make(
             binding.container,
-            getString(R.string.prompt_upload_post),
+            getString(R.string.prompt_upload_post) + username,
             Snackbar.LENGTH_SHORT
         ).show()
     }

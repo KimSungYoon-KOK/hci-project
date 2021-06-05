@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="sharedViewModel"
+            type="com.android.hciproject.viewmodels.SharedViewModel" />
+
+        <variable
             name="viewModel"
             type="com.android.hciproject.viewmodels.WritePostViewModel" />
     </data>
