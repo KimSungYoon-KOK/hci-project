@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.TimeUtils
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.ActivityPostDetailBinding
+import com.android.hciproject.utils.MyTimeUtils
 import com.android.hciproject.viewmodels.PostDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.io.File

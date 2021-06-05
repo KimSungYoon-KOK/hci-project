@@ -22,6 +22,8 @@ class WritePostFragment : Fragment() {
     val getContent = registerForActivityResult(GetContent()) { uri: Uri? ->
         // Handle the returned Uri
         binding.selectedPhoto.setImageURI(uri)
+        // 성윤
+        // uri : 그 이상한 아이디들어있는 uri
     }
 
     override fun onCreateView(

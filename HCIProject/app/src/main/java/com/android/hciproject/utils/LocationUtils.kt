@@ -34,7 +34,7 @@ object LocationUtils {
         }
     }
 
-    fun getDistance(first: LatLng, second: LatLng): Float {
+    fun getDistance(first: LatLng, second: LatLng): Float { // 미터 계산
 
         val firstLoc = Location(LocationManager.NETWORK_PROVIDER)
         val secondLoc = Location(LocationManager.NETWORK_PROVIDER)
