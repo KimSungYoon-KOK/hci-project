@@ -1,7 +1,10 @@
 package com.android.hciproject.ui
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +13,9 @@ import com.android.hciproject.R
 import com.android.hciproject.databinding.WritePostFragmentBinding
 import com.android.hciproject.viewmodels.WritePostViewModel
 import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.android.hciproject.viewmodels.SharedViewModel
 
 
 class WritePostFragment : Fragment() {
@@ -18,12 +23,16 @@ class WritePostFragment : Fragment() {
     private var _binding: WritePostFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: WritePostViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    val getContent = registerForActivityResult(GetContent()) { uri: Uri? ->
-        // Handle the returned Uri
-        binding.selectedPhoto.setImageURI(uri)
-        // 성윤
-        // uri : 그 이상한 아이디들어있는 uri
+    val getContent =
+        registerForActivityResult(GetContent()) { uri: Uri? ->
+        Log.d("uri is null","")
+        if (uri != null) {
+            Log.d("uri is not null","")
+            binding.selectedPhoto.setImageURI(uri)
+            sharedViewModel.setWritingPostImageUri(uri)
+        }
     }
 
     override fun onCreateView(
@@ -34,6 +43,7 @@ class WritePostFragment : Fragment() {
         _binding = WritePostFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        binding.sharedViewModel = sharedViewModel
         return binding.root
     }
 
@@ -45,6 +55,7 @@ class WritePostFragment : Fragment() {
     private fun setBtnOnClickListener() {
         binding.takePictureBtn.setOnClickListener {
             getContent.launch("image/*")
+            Log.d("getContent","launch")
         }
 
         binding.closeBtn.setOnClickListener {
@@ -73,4 +84,5 @@ class WritePostFragment : Fragment() {
 
 
     }
+
 }

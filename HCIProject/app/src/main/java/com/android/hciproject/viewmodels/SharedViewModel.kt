@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,8 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class SharedViewModel : ViewModel() {
+
+    var writingPostImageUri = MutableLiveData<Uri>()
 
     var loginUserName = MutableLiveData<String>()
 
@@ -61,6 +64,12 @@ class SharedViewModel : ViewModel() {
             searchWord.value = ""
         }
 
+    }
+
+    fun setWritingPostImageUri(uri: Uri) {
+        viewModelScope.launch {
+            writingPostImageUri.postValue(uri)
+        }
     }
 
     fun fetchSelectedOverlaySize(overlaySize: Double) {
