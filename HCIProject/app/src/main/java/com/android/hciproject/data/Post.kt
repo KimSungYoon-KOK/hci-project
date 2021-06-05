@@ -27,11 +27,10 @@ data class Post(
         img = p.photo()
         uname = p.uname()
         content = p.content()
-        uploadTime = p.updatedAt()
+        uploadTime = p.createdAt()
         uploadLat = p.uploadLat()!!.toDouble()
         uploadLng = p.uploadLng()!!.toDouble()
-        like = 5
-//        like = p.likes()
+        like = p.likes()!!
         comments = null
     }
 }

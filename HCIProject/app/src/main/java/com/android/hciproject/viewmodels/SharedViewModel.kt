@@ -63,6 +63,18 @@ class SharedViewModel : ViewModel() {
 
     }
 
+    fun fetchSelectedOverlaySize(overlaySize: Double) {
+        viewModelScope.launch {
+            selectedOverlaySize.postValue(overlaySize)
+        }
+    }
+
+    fun fetchSelectedLatLng(selectLatLng: LatLng) {
+        viewModelScope.launch {
+            latLng.postValue(selectLatLng)
+        }
+    }
+
     fun selectPost(post: Post) {
         viewModelScope.launch {
 //            selectedPost.postValue(post)
@@ -120,8 +132,8 @@ class SharedViewModel : ViewModel() {
 
             subscribe(clientFactory)
 
-            if(postList.value.isNullOrEmpty())
-                Log.d("postListSize","null")
+            if (postList.value.isNullOrEmpty())
+                Log.d("postListSize", "null")
         }
     }
 

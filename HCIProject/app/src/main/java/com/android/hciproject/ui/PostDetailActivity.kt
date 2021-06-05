@@ -5,16 +5,13 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
-import android.view.Window
+import android.util.TimeUtils
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
@@ -25,9 +22,10 @@ import com.android.hciproject.R
 import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
-import com.android.hciproject.databinding.ActivityMainBinding
 import com.android.hciproject.databinding.ActivityPostDetailBinding
+import com.android.hciproject.utils.MyTimeUtils
 import com.android.hciproject.viewmodels.PostDetailViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 
 class PostDetailActivity : AppCompatActivity() {
@@ -45,13 +43,13 @@ class PostDetailActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         init()
-        setLayout()
-        fetchData()
-//        observeComments()
     }
 
     private fun init() {
         clientFactory.init(this)
+        fetchData()
+        setLayout()
+        setOnClickListener()
     }
 
     private fun setLayout() {
@@ -62,7 +60,7 @@ class PostDetailActivity : AppCompatActivity() {
 
         val dm = applicationContext.resources.displayMetrics
         window.attributes.width = (dm.widthPixels * 0.9).toInt()
-        window.attributes.height = (dm.heightPixels * 0.9).toInt()
+        window.attributes.height = (dm.heightPixels * 0.8).toInt()
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
@@ -71,10 +69,6 @@ class PostDetailActivity : AppCompatActivity() {
         val p = intent.getSerializableExtra("post") as Post
         viewModel.fetchPost(p)
         //setCommentAdapter()
-        setOnClickListener()
-        Log.d("PostDetailFragment", viewModel.post.toString())
-        Log.d("PostDetailFragment::text", binding.content.text.toString())
-        Log.d("PostDetailFragment::comment", viewModel.post.value?.comments.toString())
         downloadWithTransferUtility(viewModel.post.value!!.img!!)
     }
 
@@ -111,10 +105,21 @@ class PostDetailActivity : AppCompatActivity() {
         }
 
         binding.writeCommentBtn.setOnClickListener {
-            //구현
             hideKeyboard()
             val c = Comment()
             viewModel.insertComment(c)
+            // 성윤
+            // 댓글 추가
+            Snackbar.make(binding.container, "댓글 작성", Snackbar.LENGTH_SHORT).show()
+        }
+
+        binding.likeBtn.setOnClickListener {
+            val pid = viewModel.getPid()
+            if (pid != null) {
+                // 성윤
+                // 좋아요 버튼 클릭
+                Snackbar.make(binding.container, "좋아요 클릭", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -128,7 +133,7 @@ class PostDetailActivity : AppCompatActivity() {
 //            val localPath: String = Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_DOWNLOADS
 //            ).absolutePath.toString() + "/" + photo
-        Log.d("localPath",localPath)
+        Log.d("localPath", localPath)
         val downloadObserver: TransferObserver = clientFactory.transferUtility().download(
             photo,
             File(localPath)

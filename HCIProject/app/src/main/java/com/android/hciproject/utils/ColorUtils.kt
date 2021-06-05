@@ -1,6 +1,9 @@
 package com.android.hciproject.utils
 
+import android.content.Context
+import androidx.core.content.ContextCompat
 import com.android.hciproject.R
+import java.util.*
 
 object ColorUtils {
     val redColors = arrayOf(
@@ -14,7 +17,17 @@ object ColorUtils {
         R.color.redColor800
     )
 
-    fun getColorByTime(time: Long) {
-
+    fun getColorFromTime(time: Int): Int {
+//        return when {
+//            time < 50 -> redColors[7]
+//            time < 10 -> redColors[6]
+//            time < 15 -> redColors[5]
+//            time < 20 -> redColors[4]
+//            time < 25 -> redColors[3]
+//            time < 30 -> redColors[2]
+//            time < 40 -> redColors[1]
+//            else -> redColors[0]
+//        }
+        return redColors[Random().nextInt(8)]
     }
 }

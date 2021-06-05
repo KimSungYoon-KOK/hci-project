@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="15dp">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/konkuk" />
+        android:layout_height="70dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
