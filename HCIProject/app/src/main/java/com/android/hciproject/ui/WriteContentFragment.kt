@@ -52,14 +52,18 @@ class WriteContentFragment : Fragment() {
         }
     }
 
+    // 포스트 추가하기
     private fun uploadPost() {
+        // 성윤
 
-        // viewModel.username, viewModel.content, viewModel.title, viewModel.uploadLatLng, 로 포스트 추가하면 됨
-        //ex)
+        // uri
+        // val pictureUri = sharedViewModel.writingPostImageUri.value!!
+
         val username = viewModel.username.value!!
         val title = viewModel.title.value!!
         val content = viewModel.content.value!!
         val uploadLatLng = viewModel.uploadLatLng.value!!
+
         Snackbar.make(
             binding.container,
             getString(R.string.prompt_upload_post) + username,

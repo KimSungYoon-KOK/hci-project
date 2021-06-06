@@ -78,6 +78,7 @@ class PostListFragment : Fragment() {
                 Log.d("PostListFragment", post.toString())
                 val tempPost = Post(post)
                 intent.putExtra("post", tempPost)
+                intent.putExtra("username", sharedViewModel.loginUserName.value!!)
                 startActivity(intent)
             }
         }

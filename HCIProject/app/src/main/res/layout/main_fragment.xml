@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="sharedViewModel"
             type="com.android.hciproject.viewmodels.SharedViewModel" />
@@ -21,13 +22,13 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
-            app:queryHint="@string/prompt_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/map"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="@string/prompt_search" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
@@ -41,11 +42,11 @@
 
         <com.naver.maps.map.widget.LocationButtonView
             android:id="@+id/locationBtn"
-            android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/map"/>
+            app:layout_constraintTop_toTopOf="@id/map" />
 
         <LinearLayout
             android:layout_width="wrap_content"

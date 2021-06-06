@@ -9,11 +9,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
 import com.android.hciproject.R
 import com.android.hciproject.databinding.WritePostFragmentBinding
 import com.android.hciproject.viewmodels.WritePostViewModel
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import com.android.hciproject.viewmodels.SharedViewModel
 
@@ -24,16 +27,6 @@ class WritePostFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: WritePostViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    val getContent =
-        registerForActivityResult(GetContent()) { uri: Uri? ->
-        Log.d("uri is null","")
-        if (uri != null) {
-            Log.d("uri is not null","")
-            binding.selectedPhoto.setImageURI(uri)
-            sharedViewModel.setWritingPostImageUri(uri)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +47,7 @@ class WritePostFragment : Fragment() {
 
     private fun setBtnOnClickListener() {
         binding.takePictureBtn.setOnClickListener {
-            getContent.launch("image/*")
-            Log.d("getContent","launch")
+            takePicture()
         }
 
         binding.closeBtn.setOnClickListener {
@@ -67,22 +59,14 @@ class WritePostFragment : Fragment() {
         }
     }
 
-    private fun selectPicture() {
-//        val requestActivity = registerForActivityResult(
-//            StartActivityForResult()
-//        ) { activityResult ->
-//            val selectedImageUri = activityResult.
-//            binding.selectedPhoto.setImageURI(selectedImageUri)
-//        }
-//
-//        val intent = Intent(Intent.ACTION_PICK)
-//        intent.setDataAndType(
-//            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//            "image/*"
-//        )
-//        requestActivity.launch(intent)
+    private fun takePicture() {
+        // 성윤
 
+        // uri만 가지고 오기
+        val pictureUri = "uri" // uri 타입
 
+        // sharedViewModel의 writingPostImageUri 변수에 저장하기 (아래 코드)
+        // sharedViewModel.setWritingPostImageUri(pictureUri)
     }
 
 }

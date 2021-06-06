@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.TimeUtils
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -17,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
+import com.amazonaws.services.s3.internal.ObjectExpirationHeaderHandler
 import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
 import com.android.hciproject.adapters.CommentAdapter
+import com.android.hciproject.adapters.PostAdapter
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.ActivityPostDetailBinding
@@ -50,6 +51,8 @@ class PostDetailActivity : AppCompatActivity() {
         fetchData()
         setLayout()
         setOnClickListener()
+        setCommentAdapter()
+        observeComments()
     }
 
     private fun setLayout() {
@@ -66,24 +69,22 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchData() {
-        val p = intent.getSerializableExtra("post") as Post
-        viewModel.fetchPost(p)
-        //setCommentAdapter()
+        viewModel.fetchPost(intent.getSerializableExtra("post") as Post)
+        viewModel.fetchUsername(intent.getStringExtra("username")!!)
         downloadWithTransferUtility(viewModel.post.value!!.img!!)
     }
 
     private fun observeComments() {
-        viewModel.post.observe(this, Observer { posts ->
-            if (posts.comments == null)
+        viewModel.comments.observe(this, Observer {
+            if (it == null) {
                 return@Observer
+            }
 
-            // Update comments recyclerview.
             val recyclerView = binding.recyclerview
             val adapter = recyclerView.adapter as CommentAdapter
-            if (!posts.comments.isNullOrEmpty())
-                adapter.submitList(posts.comments!!.toMutableList())
+            if (!it.isNullOrEmpty())
+                adapter.submitList(it.toMutableList())
         })
-
     }
 
     private fun setCommentAdapter() {
@@ -106,10 +107,13 @@ class PostDetailActivity : AppCompatActivity() {
 
         binding.writeCommentBtn.setOnClickListener {
             hideKeyboard()
-            val c = Comment()
-            viewModel.insertComment(c)
+
             // 성윤
             // 댓글 추가
+            val pid = viewModel.getPid()
+            val username = viewModel.username.value!!
+            val comment = viewModel.writingComment.value!!
+
             Snackbar.make(binding.container, "댓글 작성", Snackbar.LENGTH_SHORT).show()
         }
 
