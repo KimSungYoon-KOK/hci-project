@@ -262,21 +262,23 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun fetchPostListFromLocation(selectedLatLng: LatLng) {
+        if (!sharedViewModel.postList.value.isNullOrEmpty()) {
+            deleteMarker()
+            makeOverlay(selectedLatLng)
 
-        deleteMarker()
-        makeOverlay(selectedLatLng)
-
-        val overlaySize = sharedViewModel.selectedOverlaySize.value!!
-        for (post in sharedViewModel.postList.value!!) {
-            val postLatLng = LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble())
-            if (abs(
-                    LocationUtils.getDistance(
-                        selectedLatLng,
-                        postLatLng
-                    )
-                ) < overlaySize && MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.createdAt())) <= 100
-            ) {
-                addMarker(post)
+            val overlaySize = sharedViewModel.selectedOverlaySize.value!!
+            for (post in sharedViewModel.postList.value!!) {
+                val postLatLng =
+                    LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble())
+                if (abs(
+                        LocationUtils.getDistance(
+                            selectedLatLng,
+                            postLatLng
+                        )
+                    ) < overlaySize && MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.createdAt())) <= 100
+                ) {
+                    addMarker(post)
+                }
             }
         }
     }
@@ -334,6 +336,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 Log.d("MainFragment", post.toString())
                 val tempPost = Post(post)
                 intent.putExtra("post", tempPost)
+                intent.putExtra("username", sharedViewModel.loginUserName.value!!)
                 startActivity(intent)
             }
 

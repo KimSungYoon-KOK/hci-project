@@ -24,7 +24,6 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Di
 
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val uname: TextView = itemView.findViewById(R.id.username)
-        val time: TextView = itemView.findViewById(R.id.time)
         val content: TextView = itemView.findViewById(R.id.content)
     }
 
@@ -34,7 +33,6 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Di
         )
 
         holder.uname.isSelected = true
-        holder.time.isSelected = true
         holder.content.isSelected = true
 
         return holder
@@ -44,7 +42,6 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Di
         val comment = currentList[position]
         holder.apply {
             uname.text = comment.uname
-            time.text = comment.uploadTime
             content.text = comment.content
         }
     }
