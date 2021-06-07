@@ -26,7 +26,7 @@
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
 
-        <activity android:name=".testAmplify.AddPostActivity" />
+        <activity android:name=".testAmplify.AddPostActivity"/>
         <activity android:name=".testAmplify.TestActivity"/>
 
 
@@ -46,7 +46,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>
