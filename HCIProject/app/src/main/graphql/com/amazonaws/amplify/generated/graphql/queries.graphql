@@ -52,21 +52,6 @@ query GetComment($id: ID!) {
   getComment(id: $id) {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
@@ -82,18 +67,6 @@ query ListComments(
     items {
       id
       postID
-      post {
-        id
-        title
-        uname
-        content
-        uploadLat
-        uploadLng
-        photo
-        likes
-        createdAt
-        updatedAt
-      }
       uname
       content
       createdAt

@@ -160,7 +160,7 @@ class SharedViewModel : ViewModel() {
 
     private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePostSubscription.Data>
 
-    fun subscribe(clientFactory: ClientFactory) {
+    private fun subscribe(clientFactory: ClientFactory) {
         val subscription: OnCreatePostSubscription = OnCreatePostSubscription.builder().build()
         subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
         subscriptionWatcher.execute(subCallback)

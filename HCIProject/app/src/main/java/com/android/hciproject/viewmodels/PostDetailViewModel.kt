@@ -1,17 +1,27 @@
 package com.android.hciproject.viewmodels
 
+import android.content.ContentValues
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amazonaws.amplify.generated.graphql.ListCommentsQuery
+import com.amazonaws.amplify.generated.graphql.OnCreateCommentSubscription
+import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.android.hciproject.utils.MyTimeUtils
+import com.apollographql.apollo.GraphQLCall
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import kotlinx.coroutines.launch
 
 class PostDetailViewModel : ViewModel() {
     val post = MutableLiveData<Post>()
 
-    val comments = MutableLiveData<ArrayList<Comment>>()
+    val comments = MutableLiveData<ArrayList<ListCommentsQuery.Item>>()
 
     val username: MutableLiveData<String> by lazy {
         MutableLiveData<String>().apply {
@@ -25,13 +35,10 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
-    fun fetchComments(){
-        // 성윤
-        // 댓글 불러오기
-        // Post 객체 -> ListPostsQuery.Item 처럼 Comment도 바꾸면 됨!
-        // comments에 넣기만하면 자동 업데이트 됨(ui)
+    fun fetchComments(clientFactory: ClientFactory){
         viewModelScope.launch {
-            //comments.postValue("comment 리스트")
+            updateCommentList(clientFactory)
+            subscribe(clientFactory)
         }
     }
 
@@ -68,4 +75,64 @@ class PostDetailViewModel : ViewModel() {
         val time = MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.value!!.uploadTime!!))
         return time.toString() + "시간 전"
     }
+
+    // Comment
+    private fun updateCommentList(clientFactory: ClientFactory){
+        clientFactory.appSyncClient()
+            .query(ListCommentsQuery.builder().build())
+            .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+            .enqueue(queryCallback)
+    }
+
+    private val queryCallback: GraphQLCall.Callback<ListCommentsQuery.Data> =
+        object : GraphQLCall.Callback<ListCommentsQuery.Data>() {
+            override fun onResponse(response: Response<ListCommentsQuery.Data>) {
+                if (response.data() != null) {
+                    comments.postValue(ArrayList(response.data()!!.listComments()!!.items()))
+                }
+            }
+
+            override fun onFailure(e: ApolloException) {
+                Log.e(ContentValues.TAG, e.toString())
+            }
+        }
+
+    private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreateCommentSubscription.Data>
+
+    private fun subscribe(clientFactory: ClientFactory) {
+        val subscription: OnCreateCommentSubscription = OnCreateCommentSubscription.builder().build()
+        subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
+        subscriptionWatcher.execute(subCallback)
+    }
+
+    private val subCallback: AppSyncSubscriptionCall.Callback<OnCreateCommentSubscription.Data> =
+        object : AppSyncSubscriptionCall.Callback<OnCreateCommentSubscription.Data> {
+            override fun onResponse(response: Response<OnCreateCommentSubscription.Data>) {
+                Log.d("Subscription_Comments", response.data().toString())
+                if (response.data() != null) {
+                    // Update UI with the newly added item
+                    val data = response.data()!!.onCreateComment()
+                    val addedItem = ListCommentsQuery.Item(
+                        data!!.__typename(),
+                        data.id(),
+                        data.postID(),
+                        data.content(),
+                        data.uname()!!,
+                        data.createdAt(),
+                        data.updatedAt()
+                    )
+                    viewModelScope.launch {
+                        comments.value?.add(addedItem)
+                    }
+                }
+            }
+
+            override fun onFailure(e: ApolloException) {
+                Log.e("Subscription_Comments", e.toString())
+            }
+
+            override fun onCompleted() {
+                Log.i("Subscription_Comments", "Subscription completed")
+            }
+        }
 }

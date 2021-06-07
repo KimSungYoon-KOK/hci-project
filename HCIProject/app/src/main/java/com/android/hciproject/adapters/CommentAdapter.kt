@@ -4,21 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.android.hciproject.data.Comment
-import androidx.recyclerview.widget.DiffUtil
+import com.amazonaws.amplify.generated.graphql.ListCommentsQuery
 import com.android.hciproject.R
 
-class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(DiffCallback) {
+class CommentAdapter : ListAdapter<ListCommentsQuery.Item, CommentAdapter.CommentViewHolder>(DiffCallback) {
 
-    object DiffCallback : DiffUtil.ItemCallback<Comment>() {
-        override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+    object DiffCallback : DiffUtil.ItemCallback<ListCommentsQuery.Item>() {
+        override fun areItemsTheSame(oldItem: ListCommentsQuery.Item, newItem: ListCommentsQuery.Item): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            return oldItem.content == newItem.content
+        override fun areContentsTheSame(oldItem: ListCommentsQuery.Item, newItem: ListCommentsQuery.Item): Boolean {
+            return oldItem.content() == newItem.content()
         }
     }
 
@@ -41,12 +41,12 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Di
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = currentList[position]
         holder.apply {
-            uname.text = comment.uname
-            content.text = comment.content
+            uname.text = comment.uname()
+            content.text = comment.content()
         }
     }
 
-    override fun submitList(list: MutableList<Comment>?) {
+    override fun submitList(list: MutableList<ListCommentsQuery.Item>?) {
         super.submitList(list?.let { ArrayList(it) })
     }
 }

@@ -13,8 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.amazonaws.amplify.generated.graphql.ListPostsQuery
-import com.amazonaws.amplify.generated.graphql.UpdatePostMutation
+import com.amazonaws.amplify.generated.graphql.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -28,6 +27,7 @@ import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.material.snackbar.Snackbar
+import type.CreateCommentInput
 import type.UpdatePostInput
 import java.io.File
 import javax.annotation.Nonnull
@@ -74,6 +74,7 @@ class PostDetailActivity : AppCompatActivity() {
     private fun fetchData() {
         viewModel.fetchPost(intent.getSerializableExtra("post") as Post)
         viewModel.fetchUsername(intent.getStringExtra("username")!!)
+        viewModel.fetchComments(clientFactory)
         downloadWithTransferUtility(viewModel.post.value!!.img!!)
     }
 
@@ -110,15 +111,7 @@ class PostDetailActivity : AppCompatActivity() {
 
         binding.writeCommentBtn.setOnClickListener {
             hideKeyboard()
-
-            // 성윤
-
-            // 댓글 추가
-            val pid = viewModel.getPid()
-            val username = viewModel.username.value!!
-            val comment = viewModel.writingComment.value!!
-
-            Snackbar.make(binding.container, "댓글 작성", Snackbar.LENGTH_SHORT).show()
+            addComment()
         }
 
         binding.likeBtn.setOnClickListener {
@@ -126,16 +119,68 @@ class PostDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun addComment() {
+        val input = getCreateCommentInput()
+
+        if (input != null) {
+            val addCommentMutation = CreateCommentMutation.builder()
+                .input(input)
+                .build()
+
+            clientFactory.appSyncClient()
+                .mutate(addCommentMutation)
+                .refetchQueries(ListCommentsQuery.builder().build())
+                .enqueue(addComment_mutateCallback)
+
+            Snackbar.make(binding.container, "댓글 작성", Snackbar.LENGTH_SHORT).show()
+
+        } else {
+            Snackbar.make(binding.container, "댓글 작성 실패", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getCreateCommentInput(): CreateCommentInput? {
+        val pid = viewModel.getPid()
+        return if (pid != null) {
+            val uname = viewModel.username.value!!
+            val content = viewModel.writingComment.value!!
+
+            CreateCommentInput.builder()
+                .postID(pid)
+                .content(content)
+                .uname(uname)
+                .build()
+        } else {
+            null
+        }
+    }
+
+    private val addComment_mutateCallback: GraphQLCall.Callback<CreateCommentMutation.Data> =
+        object : GraphQLCall.Callback<CreateCommentMutation.Data>() {
+            override fun onResponse(response: Response<CreateCommentMutation.Data>) {
+                if (response.data() != null) {
+                    Log.d("Comment_Response", response.data()!!.toString())
+
+                }
+            }
+
+            override fun onFailure(@Nonnull e: ApolloException) {
+                Log.d("Comment_Response", "Fail")
+            }
+        }
 
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.writeCommentEditText.windowToken, 0)
+
+        //EditText 초기화
     }
 
+
+    ///////////////////////// Post Likes Update /////////////////////////
     private fun updateLikes() {
         val pid = viewModel.getPid()
         if (pid != null) {
-            // 성윤
             val input = getUpdatePostInput(pid)
             val updatePostMutation = UpdatePostMutation.builder()
                 .input(input)
@@ -144,17 +189,23 @@ class PostDetailActivity : AppCompatActivity() {
             clientFactory.appSyncClient()
                 .mutate(updatePostMutation)
                 .refetchQueries(ListPostsQuery.builder().build())
-                .enqueue(mutateCallback)
+                .enqueue(updateLikes_mutateCallback)
 
             // 좋아요 버튼 클릭
             Snackbar.make(binding.container, "좋아요 클릭", Snackbar.LENGTH_SHORT).show()
         }
     }
 
-    private val mutateCallback: GraphQLCall.Callback<UpdatePostMutation.Data> =
+    private fun getUpdatePostInput(pid: String): UpdatePostInput {
+        val likes = viewModel.post.value!!.like.get() + 1
+        return UpdatePostInput.builder()
+            .id(pid)
+            .likes(likes)
+            .build()
+    }
+    private val updateLikes_mutateCallback: GraphQLCall.Callback<UpdatePostMutation.Data> =
         object : GraphQLCall.Callback<UpdatePostMutation.Data>() {
             override fun onResponse(response: Response<UpdatePostMutation.Data>) {
-                Log.d("Update_Response", response.data().toString())
                 if (response.data() != null) {
                     val data = response.data()!!.updatePost()
                     viewModel.updateLikes(data!!.likes()!!)
@@ -168,14 +219,8 @@ class PostDetailActivity : AppCompatActivity() {
             }
         }
 
-    private fun getUpdatePostInput(pid: String): UpdatePostInput {
-        val likes = viewModel.post.value!!.like.get() + 1
-        return UpdatePostInput.builder()
-            .id(pid)
-            .likes(likes)
-            .build()
-    }
 
+    ///////////////////////// Post Image Download /////////////////////////
     private fun downloadWithTransferUtility(photo: String) {
         val localPath = externalCacheDir!!.absolutePath + "/${photo}"
 //            val localPath: String = Environment.getExternalStoragePublicDirectory(
