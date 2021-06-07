@@ -18,8 +18,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
-import com.android.hciproject.data.Comment
-import com.android.hciproject.data.Post
 import java.io.File
 
 class PostAdapter(val clientFactory: ClientFactory) :
@@ -134,6 +132,7 @@ class PostAdapter(val clientFactory: ClientFactory) :
     override fun submitList(list: MutableList<ListPostsQuery.Item>?) {
         super.submitList(list?.let { ArrayList(it) })
     }
+
 
 
 }

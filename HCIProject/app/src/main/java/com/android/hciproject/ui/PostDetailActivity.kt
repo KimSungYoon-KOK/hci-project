@@ -160,7 +160,7 @@ class PostDetailActivity : AppCompatActivity() {
             override fun onResponse(response: Response<CreateCommentMutation.Data>) {
                 if (response.data() != null) {
                     Log.d("Comment_Response", response.data()!!.toString())
-
+                    viewModel.updateCommentList(clientFactory)
                 }
             }
 

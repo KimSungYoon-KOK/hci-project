@@ -83,7 +83,7 @@ class PostDetailViewModel : ViewModel() {
     }
 
     // Comment
-    private fun updateCommentList(clientFactory: ClientFactory){
+    fun updateCommentList(clientFactory: ClientFactory){
         clientFactory.appSyncClient()
             .query(ListCommentsQuery.builder().build())
             .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
@@ -93,8 +93,17 @@ class PostDetailViewModel : ViewModel() {
     private val queryCallback: GraphQLCall.Callback<ListCommentsQuery.Data> =
         object : GraphQLCall.Callback<ListCommentsQuery.Data>() {
             override fun onResponse(response: Response<ListCommentsQuery.Data>) {
+                // 전체 댓글 다 불러와서 포스트 아이디 맞춰서 추가
                 if (response.data() != null) {
-                    comments.postValue(ArrayList(response.data()!!.listComments()!!.items()))
+                    if (response.data() != null) {
+                        val commentList = ArrayList<ListCommentsQuery.Item>()
+                        for (item in ArrayList(response.data()!!.listComments()!!.items())) {
+                            if (getPid() == item.postID()) {
+                                commentList.add(item)
+                            }
+                        }
+                        comments.postValue(commentList)
+                    }
                 }
             }
 
