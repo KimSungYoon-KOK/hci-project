@@ -132,16 +132,19 @@ class SharedViewModel : ViewModel() {
 
     fun fetchDB(clientFactory: ClientFactory) {
         viewModelScope.launch {
-            clientFactory.appSyncClient()
-                .query(ListPostsQuery.builder().build())
-                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
-                .enqueue(queryCallback)
-
+            updatePostList(clientFactory)
             subscribe(clientFactory)
 
             if (postList.value.isNullOrEmpty())
                 Log.d("postListSize", "null")
         }
+    }
+
+    fun updatePostList(clientFactory: ClientFactory){
+        clientFactory.appSyncClient()
+            .query(ListPostsQuery.builder().build())
+            .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+            .enqueue(queryCallback)
     }
 
     private val queryCallback: GraphQLCall.Callback<ListPostsQuery.Data> =

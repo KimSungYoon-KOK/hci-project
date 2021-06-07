@@ -41,8 +41,15 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
+    fun updateLikes(like :Int){
+        viewModelScope.launch {
+            post.value!!.like.set(like)
+        }
+    }
+
     fun fetchPost(p: Post) {
         viewModelScope.launch {
+//            post.postValue(p)
             post.value = p
         }
     }

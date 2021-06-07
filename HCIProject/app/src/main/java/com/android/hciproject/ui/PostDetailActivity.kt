@@ -3,31 +3,34 @@ package com.android.hciproject.ui
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.amplify.generated.graphql.UpdatePostMutation
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
-import com.amazonaws.services.s3.internal.ObjectExpirationHeaderHandler
 import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
 import com.android.hciproject.adapters.CommentAdapter
-import com.android.hciproject.adapters.PostAdapter
-import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.ActivityPostDetailBinding
-import com.android.hciproject.utils.MyTimeUtils
 import com.android.hciproject.viewmodels.PostDetailViewModel
+import com.apollographql.apollo.GraphQLCall
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import com.google.android.material.snackbar.Snackbar
+import type.UpdatePostInput
 import java.io.File
+import javax.annotation.Nonnull
 
 class PostDetailActivity : AppCompatActivity() {
 
@@ -109,6 +112,7 @@ class PostDetailActivity : AppCompatActivity() {
             hideKeyboard()
 
             // 성윤
+
             // 댓글 추가
             val pid = viewModel.getPid()
             val username = viewModel.username.value!!
@@ -118,21 +122,61 @@ class PostDetailActivity : AppCompatActivity() {
         }
 
         binding.likeBtn.setOnClickListener {
-            val pid = viewModel.getPid()
-            if (pid != null) {
-                // 성윤
-                // 좋아요 버튼 클릭
-                Snackbar.make(binding.container, "좋아요 클릭", Snackbar.LENGTH_SHORT).show()
-            }
+            updateLikes()
         }
     }
+
 
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.writeCommentEditText.windowToken, 0)
     }
 
-    fun downloadWithTransferUtility(photo: String) {
+    private fun updateLikes() {
+        val pid = viewModel.getPid()
+        if (pid != null) {
+            // 성윤
+            val input = getUpdatePostInput(pid)
+            val updatePostMutation = UpdatePostMutation.builder()
+                .input(input)
+                .build()
+
+            clientFactory.appSyncClient()
+                .mutate(updatePostMutation)
+                .refetchQueries(ListPostsQuery.builder().build())
+                .enqueue(mutateCallback)
+
+            // 좋아요 버튼 클릭
+            Snackbar.make(binding.container, "좋아요 클릭", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private val mutateCallback: GraphQLCall.Callback<UpdatePostMutation.Data> =
+        object : GraphQLCall.Callback<UpdatePostMutation.Data>() {
+            override fun onResponse(response: Response<UpdatePostMutation.Data>) {
+                Log.d("Update_Response", response.data().toString())
+                if (response.data() != null) {
+                    val data = response.data()!!.updatePost()
+                    viewModel.updateLikes(data!!.likes()!!)
+//                    viewModel.post.value!!.like = data!!.likes()!!
+                    Log.d("Update_Response", viewModel.post.value!!.like.toString())
+                }
+            }
+
+            override fun onFailure(@Nonnull e: ApolloException) {
+                Log.d("Update_Response", "Update Fail")
+            }
+        }
+
+    private fun getUpdatePostInput(pid: String): UpdatePostInput {
+        val likes = viewModel.post.value!!.like.get() + 1
+        return UpdatePostInput.builder()
+            .id(pid)
+            .likes(likes)
+            .build()
+    }
+
+    private fun downloadWithTransferUtility(photo: String) {
         val localPath = externalCacheDir!!.absolutePath + "/${photo}"
 //            val localPath: String = Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_DOWNLOADS
@@ -168,6 +212,5 @@ class PostDetailActivity : AppCompatActivity() {
             }
         })
     }
-
 
 }

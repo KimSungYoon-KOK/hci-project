@@ -180,7 +180,9 @@ class WriteContentFragment : Fragment() {
             .uname(username)
             .uploadLat(uploadLatLng.latitude.toString())
             .uploadLng(uploadLatLng.longitude.toString())
-            .photo(getS3Key(photoID!!)).build()
+            .likes(0)
+            .photo(getS3Key(photoID!!))
+            .build()
     }
 
 //    private fun uploadAndSave() {

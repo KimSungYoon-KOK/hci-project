@@ -42,6 +42,10 @@ class WritePostFragment : Fragment() {
     private var photoUri: Uri? = null
     private var photoID: String? = null
 
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()){
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

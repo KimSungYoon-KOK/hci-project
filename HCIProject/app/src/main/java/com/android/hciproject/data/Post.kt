@@ -1,5 +1,6 @@
 package com.android.hciproject.data
 
+import androidx.databinding.ObservableInt
 import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import java.io.Serializable
 
@@ -13,9 +14,9 @@ data class Post(
     var uploadLat: Double?,
     var uploadLng: Double?,
     var comments: ArrayList<Comment>?,
-    var like: Int
+    var like: ObservableInt
 ) : Serializable {
-    constructor() : this("id", "title", "img", "uname", "content", "time", 0.0, 0.0, null, 0)
+    constructor() : this("id", "title", "img", "uname", "content", "time", 0.0, 0.0, null, ObservableInt(0))
 
     fun getLikeNumToString(): String {
         return like.toString()
@@ -30,7 +31,7 @@ data class Post(
         uploadTime = p.createdAt()
         uploadLat = p.uploadLat()!!.toDouble()
         uploadLng = p.uploadLng()!!.toDouble()
-        like = p.likes()!!
+        like = ObservableInt(p.likes()!!)
         comments = null
     }
 }

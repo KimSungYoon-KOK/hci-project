@@ -3,21 +3,18 @@ package com.android.hciproject.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.amazonaws.amplify.generated.graphql.ListPostsQuery
 import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
-import com.android.hciproject.adapters.CommentAdapter
 import com.android.hciproject.adapters.PostAdapter
 import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.PostListFragmentBinding
@@ -97,5 +94,11 @@ class PostListFragment : Fragment() {
                 adapter.submitList(it.toMutableList())
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+        sharedViewModel.updatePostList(clientFactory)
+    }
+
 
 }
