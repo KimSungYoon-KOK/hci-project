@@ -1,9 +1,8 @@
 package com.android.hciproject.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.content.Intent.ACTION_PICK
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -41,10 +39,6 @@ class WritePostFragment : Fragment() {
 
     private var photoUri: Uri? = null
     private var photoID: String? = null
-
-    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()){
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,34 +99,40 @@ class WritePostFragment : Fragment() {
         }
 
         binding.nextBtn.setOnClickListener {
-            saveBitmapFile()
+//            if (saveBitmapFile()) {
             findNavController().navigate(R.id.action_writePostFragment_to_writeContentFragment)
+//            }
         }
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun takePicture() {
         Log.d("Intent", "takePicture")
-        val intent = Intent(ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        requestActivity.launch(intent)
-        Log.d("Intent", "takePicture Complete")
-//        getContent.launch("image/*")
-//        if (photoUri != null && photoID != null)  {
-//            //sharedViewModel.setWritingPostImageUri(photoUri!!)
-//            sharedViewModel.setWritingPostImageID(photoID!!)
-//        } else {
-//            Snackbar.make(
-//                binding.container,
-//                getString(R.string.prompt_fail_photoPick),
-//                Snackbar.LENGTH_SHORT
-//            ).show()
+//        val intent = Intent(ACTION_PICK).apply {
+//            type = "image/*"
 //        }
+        getContent.launch("image/*")
 
+        Log.d("Intent", "takePicture Complete")
+
+        if (photoUri != null && photoID != null)  {
+            //sharedViewModel.setWritingPostImageUri(photoUri!!)
+            sharedViewModel.setWritingPostImageID(photoID!!)
+        } else {
+            Snackbar.make(
+                binding.container,
+                getString(R.string.prompt_fail_photoPick),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     ////////////////////////////// Load Photo //////////////////////////////
-    private val requestActivity: ActivityResultLauncher<Intent> = registerForActivityResult(
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        Log.d("Intent", uri.toString())
+
+    }
+    private val requestActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { activityResult ->
         Log.d("Intent", activityResult.resultCode.toString())
         if (activityResult.resultCode == AppCompatActivity.RESULT_OK && activityResult.data != null) {
@@ -172,28 +172,29 @@ class WritePostFragment : Fragment() {
         }
     }
 
-    private fun saveBitmapFile() {
+    private fun saveBitmapFile(): Boolean {
         if (photoUri == null || photoID == null) {
             Snackbar.make(
                 binding.container,
                 getString(R.string.prompt_do_photoPick),
                 Snackbar.LENGTH_SHORT
             ).show()
-            return@saveBitmapFile
-        }
-
-        //캐시 파일 생성
-        val resolver = requireContext().contentResolver
-        try {
-            val inputStream = resolver.openInputStream(photoUri!!)
-            val options = BitmapFactory.Options()
-            options.inSampleSize = 4
-            val imgBitmap = BitmapFactory.decodeStream(inputStream, null, options)
-            inputStream?.close()
-            saveBitmapToJpeg(imgBitmap!!, photoID!!)
-            Log.d("Uploading", "Save Cache Success")
-        } catch (e: Exception) {
-            Log.e("Uploading", "Save Cache Fail")
+            return false
+        } else {
+            //캐시 파일 생성
+            val resolver = requireContext().contentResolver
+            try {
+                val inputStream = resolver.openInputStream(photoUri!!)
+                val options = BitmapFactory.Options()
+                options.inSampleSize = 4
+                val imgBitmap = BitmapFactory.decodeStream(inputStream, null, options)
+                inputStream?.close()
+                saveBitmapToJpeg(imgBitmap!!, photoID!!)
+                Log.d("Uploading", "Save Cache Success")
+            } catch (e: Exception) {
+                Log.e("Uploading", "Save Cache Fail")
+            }
+            return true
         }
     }
 
@@ -210,5 +211,4 @@ class WritePostFragment : Fragment() {
             Log.e("Uploading", "Save Bitmap Fail")
         }
     }
-
 }

@@ -4,9 +4,7 @@ import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import com.amazonaws.mobile.client.*
-import com.android.hciproject.ClientFactory
 import com.android.hciproject.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
     }
 
     private fun showSignIn() {
