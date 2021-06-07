@@ -66,8 +66,6 @@ class SplashFragment : Fragment() {
         sharedViewModel.isLogin.observe(viewLifecycleOwner, {
             if (it) {
                 findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
-            } else {
-                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
             }
         })
     }

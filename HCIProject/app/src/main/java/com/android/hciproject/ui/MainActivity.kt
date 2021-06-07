@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity() {
                     Log.e(ContentValues.TAG, e.toString())
                 }
             })
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
     }
 
     private fun showSignIn() {
