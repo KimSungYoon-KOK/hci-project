@@ -1,7 +1,6 @@
 package com.android.hciproject.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -105,15 +104,12 @@ class WritePostFragment : Fragment() {
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
     private fun takePicture() {
-        Log.d("Intent", "takePicture")
 //        val intent = Intent(ACTION_PICK).apply {
 //            type = "image/*"
 //        }
         getContent.launch("image/*")
 
-        Log.d("Intent", "takePicture Complete")
 
         if (photoUri != null && photoID != null)  {
             //sharedViewModel.setWritingPostImageUri(photoUri!!)
@@ -130,8 +126,8 @@ class WritePostFragment : Fragment() {
     ////////////////////////////// Load Photo //////////////////////////////
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         Log.d("Intent", uri.toString())
-
     }
+
     private val requestActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { activityResult ->
         Log.d("Intent", activityResult.resultCode.toString())

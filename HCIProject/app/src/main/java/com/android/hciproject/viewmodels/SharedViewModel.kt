@@ -13,7 +13,6 @@ import com.amazonaws.amplify.generated.graphql.OnCreatePostSubscription
 import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers
 import com.android.hciproject.ClientFactory
-import com.android.hciproject.data.Comment
 import com.android.hciproject.data.Post
 import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response

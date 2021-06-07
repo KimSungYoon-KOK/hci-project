@@ -75,20 +75,28 @@ class WriteContentFragment : Fragment() {
     // 포스트 추가하기
     private fun uploadPost() {
         // 성윤
-        photoID = sharedViewModel.writingPostImageID.value
-        if (photoID != null) {
-            uploadWithTransferUtility(photoID!!)
-        } else {
-            Snackbar.make(
-                binding.container,
-                getString(R.string.prompt_upload_post),
-                Snackbar.LENGTH_SHORT
-            ).show()
-        }
+//        photoID = sharedViewModel.writingPostImageID.value
+//        if (photoID != null) {
+//            uploadWithTransferUtility(photoID!!)
+//        } else {
+//            Snackbar.make(
+//                binding.container,
+//                getString(R.string.prompt_upload_post),
+//                Snackbar.LENGTH_SHORT
+//            ).show()
+//        }
+        photoID = "1011"
+        save()
+        Snackbar.make(
+            binding.container,
+            getString(R.string.prompt_upload_post),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     ////////////////////////////// Upload Post to S3 //////////////////////////////
     private fun save() {
+        Log.d("CreatePost_save", "Save function Call")
         val input = getCreatePostInput()
 
         val addPostMutation = CreatePostMutation.builder()
@@ -101,10 +109,28 @@ class WriteContentFragment : Fragment() {
             .enqueue(mutateCallback)
     }
 
-    // Mutation callback code
+    private fun getCreatePostInput(): CreatePostInput {
+        //val username = AWSMobileClient.getInstance().username.toString()
+        val username = viewModel.username.value!!
+        val title = viewModel.title.value!!
+        val content = viewModel.content.value!!
+        val uploadLatLng = viewModel.uploadLatLng.value!!
+
+        return CreatePostInput.builder()
+            .title(title)
+            .content(content)
+            .uname(username)
+            .uploadLat(uploadLatLng.latitude.toString())
+            .uploadLng(uploadLatLng.longitude.toString())
+            .likes(0)
+            .photo(getS3Key(photoID!!))
+            .build()
+    }
+
     private val mutateCallback: GraphQLCall.Callback<CreatePostMutation.Data> =
         object : GraphQLCall.Callback<CreatePostMutation.Data>() {
             override fun onResponse(response: Response<CreatePostMutation.Data>) {
+                Log.d("CreatePost_callback", response.data().toString())
                 Snackbar.make(
                     binding.container,
                     getString(R.string.prompt_upload_post) + viewModel.username.value,
@@ -165,24 +191,6 @@ class WriteContentFragment : Fragment() {
                 ).show()
             }
         })
-    }
-
-    private fun getCreatePostInput(): CreatePostInput {
-//        val username = AWSMobileClient.getInstance().username.toString()
-        val username = viewModel.username.value!!
-        val title = viewModel.title.value!!
-        val content = viewModel.content.value!!
-        val uploadLatLng = viewModel.uploadLatLng.value!!
-
-        return CreatePostInput.builder()
-            .title(title)
-            .content(content)
-            .uname(username)
-            .uploadLat(uploadLatLng.latitude.toString())
-            .uploadLng(uploadLatLng.longitude.toString())
-            .likes(0)
-            .photo(getS3Key(photoID!!))
-            .build()
     }
 
 //    private fun uploadAndSave() {
