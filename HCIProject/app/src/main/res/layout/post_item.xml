@@ -74,19 +74,6 @@
                 android:textColor="@color/pastelRed"
                 android:textSize="12sp" />
 
-            <ImageView
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:src="@drawable/ic_baseline_mode_comment_24"
-                app:tint="@color/pastelBlue" />
-
-            <TextView
-                android:id="@+id/commentNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textColor="@color/pastelBlue"
-                android:textSize="12sp" />
         </LinearLayout>
 
 
