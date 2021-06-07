@@ -90,21 +90,6 @@ mutation CreateComment(
   createComment(input: $input, condition: $condition) {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
@@ -118,21 +103,6 @@ mutation UpdateComment(
   updateComment(input: $input, condition: $condition) {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
@@ -146,21 +116,6 @@ mutation DeleteComment(
   deleteComment(input: $input, condition: $condition) {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt

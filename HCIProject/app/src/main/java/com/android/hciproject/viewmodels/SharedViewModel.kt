@@ -48,12 +48,6 @@ class SharedViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val comments = ArrayList<Comment>()
-            comments.add(Comment("uname", "content", "uplaodtime"))
-            comments.add(Comment("uname2", "content", "uplaodtime"))
-            comments.add(Comment("uname3", "content", "uplaodtime"))
-            comments.add(Comment("uname4", "content", "uplaodtime"))
-            val list = ArrayList<Post>()
             val lat = LatLng(
                 37.54225941463205,
                 127.07629578159484
@@ -160,7 +154,7 @@ class SharedViewModel : ViewModel() {
 
     private lateinit var subscriptionWatcher: AppSyncSubscriptionCall<OnCreatePostSubscription.Data>
 
-    fun subscribe(clientFactory: ClientFactory) {
+    private fun subscribe(clientFactory: ClientFactory) {
         val subscription: OnCreatePostSubscription = OnCreatePostSubscription.builder().build()
         subscriptionWatcher = clientFactory.appSyncClient().subscribe(subscription)
         subscriptionWatcher.execute(subCallback)

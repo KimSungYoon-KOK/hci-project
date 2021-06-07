@@ -10,10 +10,9 @@ type Post @model {
   comments: [Comment] @connection(keyName: "byPost", fields: ["id"])
 }
 
-type Comment @model @key(name: "byPost", fields: ["postID", "content"]) {
+type Comment @model @key(name: "byPost", fields: ["postID"]) {
   id: ID!
   postID: ID!
-  post: Post @connection(fields: ["postID"])
   uname: String
   content: String!
 }

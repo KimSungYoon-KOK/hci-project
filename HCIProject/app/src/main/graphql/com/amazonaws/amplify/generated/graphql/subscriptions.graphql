@@ -78,21 +78,6 @@ subscription OnCreateComment {
   onCreateComment {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
@@ -103,21 +88,6 @@ subscription OnUpdateComment {
   onUpdateComment {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
@@ -128,21 +98,6 @@ subscription OnDeleteComment {
   onDeleteComment {
     id
     postID
-    post {
-      id
-      title
-      uname
-      content
-      uploadLat
-      uploadLng
-      photo
-      likes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
     uname
     content
     createdAt
