@@ -18,6 +18,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
+import com.android.hciproject.utils.MyTimeUtils
 import java.io.File
 
 class PostAdapter(val clientFactory: ClientFactory) :
@@ -46,7 +47,6 @@ class PostAdapter(val clientFactory: ClientFactory) :
         val timeTextView: TextView = itemView.findViewById(R.id.time)
         val contentTextView: TextView = itemView.findViewById(R.id.content)
         val likeNumTextView: TextView = itemView.findViewById(R.id.likeNum)
-        val commentNumTextView: TextView = itemView.findViewById(R.id.commentNum)
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
 
         init {
@@ -105,7 +105,6 @@ class PostAdapter(val clientFactory: ClientFactory) :
         )
 
         holder.likeNumTextView.isSelected = true
-        holder.commentNumTextView.isSelected = true
         holder.titleTextView.isSelected = true
         holder.timeTextView.isSelected = true
         holder.contentTextView.isSelected = true
@@ -117,22 +116,18 @@ class PostAdapter(val clientFactory: ClientFactory) :
         val post = currentList[position]
         holder.apply {
             titleTextView.text = post.title()
-            timeTextView.text = post.updatedAt()
+            timeTextView.text =
+                "${MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.createdAt()))}시간 전"
             contentTextView.text = post.content()
             likeNumTextView.text = post.likes().toString()
             if (!post.photo().isNullOrEmpty())
                 downloadWithTransferUtility(post.photo()!!)
-            if (post.comments() == null)
-                commentNumTextView.text = "0"
-            else
-                commentNumTextView.text = "test"
         }
     }
 
     override fun submitList(list: MutableList<ListPostsQuery.Item>?) {
         super.submitList(list?.let { ArrayList(it) })
     }
-
 
 
 }
