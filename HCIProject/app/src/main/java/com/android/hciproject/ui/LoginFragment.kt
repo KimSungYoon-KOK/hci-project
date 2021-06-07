@@ -24,8 +24,5 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (AWSMobileClient.getInstance().isSignedIn) {
-            findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-        }
     }
 }

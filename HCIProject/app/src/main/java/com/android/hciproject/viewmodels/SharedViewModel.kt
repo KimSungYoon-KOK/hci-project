@@ -24,6 +24,14 @@ import java.io.IOException
 
 class SharedViewModel : ViewModel() {
 
+    var isLogin = MutableLiveData<Boolean>()
+
+    fun setLoginStatus(login: Boolean) {
+        viewModelScope.launch {
+            isLogin.postValue(login)
+        }
+    }
+
     var writingPostImageID = MutableLiveData<String>()
 
     var loginUserName = MutableLiveData<String>()
@@ -134,7 +142,7 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun updatePostList(clientFactory: ClientFactory){
+    fun updatePostList(clientFactory: ClientFactory) {
         clientFactory.appSyncClient()
             .query(ListPostsQuery.builder().build())
             .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
