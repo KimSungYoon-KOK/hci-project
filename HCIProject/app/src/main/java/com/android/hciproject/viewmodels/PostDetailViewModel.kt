@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class PostDetailViewModel : ViewModel() {
     val post = MutableLiveData<Post>()
 
-    val comments = MutableLiveData<ArrayList<ListCommentsQuery.Item>>()
+    val comments = MutableLiveData<ArrayList<ListCommentsQuery.Item>?>()
 
     val username: MutableLiveData<String> by lazy {
         MutableLiveData<String>().apply {
@@ -32,6 +32,12 @@ class PostDetailViewModel : ViewModel() {
     val writingComment: MutableLiveData<String> by lazy {
         MutableLiveData<String>().apply {
             postValue("")
+        }
+    }
+
+    fun deleteComment(){
+        viewModelScope.launch {
+            writingComment.postValue("")
         }
     }
 

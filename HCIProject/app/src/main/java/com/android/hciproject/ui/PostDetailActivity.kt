@@ -172,12 +172,9 @@ class PostDetailActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.writeCommentEditText.windowToken, 0)
-
-        //EditText 초기화
+        viewModel.deleteComment()
     }
 
-
-    ///////////////////////// Post Likes Update /////////////////////////
     private fun updateLikes() {
         val pid = viewModel.getPid()
         if (pid != null) {
@@ -203,6 +200,7 @@ class PostDetailActivity : AppCompatActivity() {
             .likes(likes)
             .build()
     }
+
     private val updateLikes_mutateCallback: GraphQLCall.Callback<UpdatePostMutation.Data> =
         object : GraphQLCall.Callback<UpdatePostMutation.Data>() {
             override fun onResponse(response: Response<UpdatePostMutation.Data>) {

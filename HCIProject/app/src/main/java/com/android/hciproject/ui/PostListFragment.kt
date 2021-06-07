@@ -87,7 +87,7 @@ class PostListFragment : Fragment() {
             if (it == null)
                 return@Observer
 
-            // Update comments recyclerview.
+            // Update Posts recyclerview.
             val recyclerView = binding.recyclerview
             val adapter = recyclerView.adapter as PostAdapter
             if (!it.isNullOrEmpty())
