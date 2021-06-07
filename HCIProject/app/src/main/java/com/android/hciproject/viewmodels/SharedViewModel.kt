@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,13 +19,12 @@ import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 class SharedViewModel : ViewModel() {
 
-    var writingPostImageUri = MutableLiveData<Uri>()
+    var writingPostImageID = MutableLiveData<String>()
 
     var loginUserName = MutableLiveData<String>()
 
@@ -66,9 +64,9 @@ class SharedViewModel : ViewModel() {
 
     }
 
-    fun setWritingPostImageUri(uri: Uri) {
+    fun setWritingPostImageID(id: String) {
         viewModelScope.launch {
-            writingPostImageUri.postValue(uri)
+            writingPostImageID.postValue(id)
         }
     }
 

@@ -22,8 +22,13 @@
     <string name="prompt_zoom_level_3">1km</string>
     <string name="prompt_no_result">검색 결과가 없습니다.</string>
     <string name="prompt_write_content">내용을 입력하세요…</string>
-    <string name="prompt_request_permission">위치 권한이 필요합니다.</string>
+    <string name="prompt_request_permission_locate">위치 권한이 필요합니다.</string>
+    <string name="prompt_request_permission_file">파일 권한이 필요합니다.</string>
     <string name="prompt_write_comment">댓글을 입력하세요…</string>
     <string name="prompt_like_text">명이 좋아합니다.</string>
     <string name="prompt_upload_post">게시글을 작성했습니다!</string>
+    <string name="prompt_fail_photoPick">사진을 불러오는데 실패하였습니다. 다시 시도해주세요.</string>
+    <string name="prompt_do_photoPick">사진을 선택해 주세요.</string>
+    <string name="prompt_fail_upload_photo">사진을 업로드하는데 실패하였습니다. 네트워크를 확인해주세요.</string>
+
 </resources>
