@@ -149,16 +149,16 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun requestPermission() {
         val requestPermissionLauncher = registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (!isGranted) {
-                    Snackbar.make(
-                        binding.container,
-                        getString(R.string.prompt_request_permission_locate),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (!isGranted) {
+                Snackbar.make(
+                    binding.container,
+                    getString(R.string.prompt_request_permission_locate),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
+        }
 
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
@@ -230,13 +230,14 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     @UiThread
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
-
         mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         naverMap.apply {
             locationSource = mLocationSource
             mapType = NaverMap.MapType.Navi
             locationTrackingMode = LocationTrackingMode.Follow
             uiSettings.isZoomControlEnabled = false
+            uiSettings.isLocationButtonEnabled = false
+            uiSettings.isRotateGesturesEnabled = false
         }
 
         setFusedLocationClient()
@@ -261,6 +262,16 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             naverMap.moveCamera(CameraUpdate.scrollTo(coord).animate(CameraAnimation.Linear))
             sharedViewModel.fetchSelectedLatLng(coord)
         }
+
+        binding.locationBtn.setOnClickListener {
+
+            if (it.isActivated) {
+                Snackbar.make(binding.container, "활성화", Snackbar.LENGTH_SHORT).show()
+            } else {
+                Snackbar.make(binding.container, "비활성화", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun fetchPostListFromLocation(selectedLatLng: LatLng) {
@@ -277,7 +288,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                             selectedLatLng,
                             postLatLng
                         )
-                    ) < overlaySize && MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.createdAt())) <= 100
+                    ) < overlaySize && MyTimeUtils.getTimeDiff(MyTimeUtils.getTimeInMillis(post.createdAt())) <= 24
                 ) {
                     addMarker(post)
                 }
@@ -298,7 +309,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             latLng
         )
         polyLine.width = 3
-        polyLine.color = getColor(requireContext(), R.color.grayColor500)
+        polyLine.color = getColor(requireContext(), R.color.greenColor500)
         polyLine.setPattern(20, 10)
         polyLine.map = naverMap
     }
@@ -347,6 +358,8 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         val postMarker =
             Marker(LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble()))
         postMarker.onClickListener = listener
+        postMarker.isIconPerspectiveEnabled = true
+        postMarker.alpha = 0.8f
         postMarker.icon = MarkerIcons.BLACK
         postMarker.iconTintColor = getColor(
             requireContext(),
