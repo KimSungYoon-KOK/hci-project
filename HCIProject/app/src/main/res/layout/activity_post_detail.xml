@@ -140,7 +140,7 @@
                             android:id="@+id/likeNumTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.post.getLikeNumToString}"
+                            android:text="@{String.valueOf(viewModel.post.like)}"
                             android:textSize="14sp" />
 
                         <TextView

@@ -5,43 +5,43 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.UiThread
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil.inflate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.amazonaws.amplify.generated.graphql.ListPostsQuery
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.android.hciproject.ClientFactory
 import com.android.hciproject.R
+import com.android.hciproject.data.Post
 import com.android.hciproject.databinding.MainFragmentBinding
+import com.android.hciproject.utils.ColorUtils
 import com.android.hciproject.utils.LocationUtils
+import com.android.hciproject.utils.MyTimeUtils
 import com.android.hciproject.viewmodels.MainFragmentViewModel
 import com.android.hciproject.viewmodels.SharedViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
-import com.naver.maps.map.util.FusedLocationSource
-import android.location.Location
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getColor
-import com.amazonaws.amplify.generated.graphql.ListPostsQuery
-import com.android.hciproject.ClientFactory
-import com.android.hciproject.data.Post
-import com.android.hciproject.utils.ColorUtils
-import com.android.hciproject.utils.MyTimeUtils
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.naver.maps.map.overlay.*
+import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class MainFragment : Fragment(), OnMapReadyCallback {
@@ -88,6 +88,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun initDB() {
         clientFactory.init(requireContext())
+        sharedViewModel.fetchLoginUserName(AWSMobileClient.getInstance().username)
         sharedViewModel.fetchDB(clientFactory)
     }
 
@@ -147,31 +148,29 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun requestPermission() {
-        val requestPermissionLauncher =
-            registerForActivityResult(
+        val requestPermissionLauncher = registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
-                if (isGranted) {
-
-                } else {
+                if (!isGranted) {
                     Snackbar.make(
                         binding.container,
-                        getString(R.string.prompt_request_permission),
+                        getString(R.string.prompt_request_permission_locate),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
 
-        when {
+        when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-            -> {
+            ), ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ), ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) -> {
                 // You can use the API that requires the permission.
             }
             else -> {
@@ -182,6 +181,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 )
                 requestPermissionLauncher.launch(
                     Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+                requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
             }
         }

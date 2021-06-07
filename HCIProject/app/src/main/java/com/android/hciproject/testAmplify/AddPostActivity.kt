@@ -82,7 +82,6 @@ class AddPostActivity : AppCompatActivity() {
             .mutate(addPostMutation)
             .refetchQueries(ListPostsQuery.builder().build())
             .enqueue(mutateCallback)
-
     }
 
     // Mutation callback code
