@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,14 +27,13 @@ class PostListFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var _binding: PostListFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: PostListViewModel
+    private val viewModel: PostListViewModel by viewModels()
     private val clientFactory = ClientFactory()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        viewModel = PostListViewModel()
+    ): View {
         _binding = PostListFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -43,7 +43,8 @@ class PostListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("postlist있긴하니?",sharedViewModel.postList.value!!.size.toString())
+//        Log.d("postlist있긴하니?",sharedViewModel.postList.value!!.size.toString())
+//        Log.d("postlist있긴하니?",sharedViewModel.postListFromMap.value!!.size.toString())
         init()
         setOnClickListener()
         setPostAdapter()
@@ -87,12 +88,12 @@ class PostListFragment : Fragment() {
         sharedViewModel.postList.observe(viewLifecycleOwner, Observer {
             if (it == null)
                 return@Observer
-            sharedViewModel.fetchPostListFromMap()
+//            sharedViewModel.fetchPostListFromMap()
             // Update Posts recyclerview.
             val recyclerView = binding.recyclerview
             val adapter = recyclerView.adapter as PostAdapter
             if (!it.isNullOrEmpty())
-                adapter.submitList(sharedViewModel.postListFromMap.value!!.toMutableList())
+                adapter.submitList(it.toMutableList())
         })
     }
 

@@ -95,7 +95,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun init() {
-        sharedViewModel.fetchPostListFromMap()
         mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         postMarkers = ArrayList()
         infoWindow = InfoWindow()
@@ -235,6 +234,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun setOnClickListener() {
         binding.showPostListBtn.setOnClickListener {
+            Log.d("버튼누르기전",sharedViewModel.postList.value!!.size.toString())
+            Log.d("버튼누르기전맵",sharedViewModel.postListFromMap.value!!.size.toString())
+
             findNavController().navigate(R.id.action_mainFragment_to_postListFragment)
         }
 
@@ -453,9 +455,11 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
         postMarkers.add(postMarker)
         sharedViewModel.addPostListFromMap(post)
+
     }
 
     private fun deleteMarker() {
+        Log.d("deleteMarker","")
         sharedViewModel.deletePostListFromMap()
         for (m in postMarkers)
             m.map = null

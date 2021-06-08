@@ -24,7 +24,7 @@
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:bind_visibility="@{sharedViewModel.postListFromMap}"
+            app:bind_visibility="@{sharedViewModel.postList}"
             app:layout_constraintBottom_toTopOf="@id/showMapBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
