@@ -39,12 +39,34 @@ class SharedViewModel : ViewModel() {
 
     val postList = MutableLiveData<ArrayList<ListPostsQuery.Item>>()
 
+    val postListFromMap = MutableLiveData<ArrayList<ListPostsQuery.Item>>()
+
     val latLng = MutableLiveData<LatLng>()
 
     var selectedPost = MutableLiveData<ListPostsQuery.Item>()
 
     val selectedOverlaySize = MutableLiveData<Double>().apply {
         value = 1000.0
+    }
+
+    fun fetchPostListFromMap() {
+        viewModelScope.launch {
+            postListFromMap.postValue(ArrayList())
+        }
+    }
+
+    fun deletePostListFromMap() {
+        viewModelScope.launch {
+            Log.d("deletePostIdInRange", "testLog")
+            postListFromMap.postValue(ArrayList())
+        }
+    }
+
+    fun addPostListFromMap(post: ListPostsQuery.Item) {
+        viewModelScope.launch {
+//            Log.d("addPostIdInRange","testLog: ${pid}")
+            postListFromMap.value?.add(post)
+        }
     }
 
     val address: MutableLiveData<String> by lazy {

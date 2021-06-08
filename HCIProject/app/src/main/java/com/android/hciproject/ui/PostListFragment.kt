@@ -43,6 +43,7 @@ class PostListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("postlist있긴하니?",sharedViewModel.postList.value!!.size.toString())
         init()
         setOnClickListener()
         setPostAdapter()
@@ -86,12 +87,12 @@ class PostListFragment : Fragment() {
         sharedViewModel.postList.observe(viewLifecycleOwner, Observer {
             if (it == null)
                 return@Observer
-
+            sharedViewModel.fetchPostListFromMap()
             // Update Posts recyclerview.
             val recyclerView = binding.recyclerview
             val adapter = recyclerView.adapter as PostAdapter
             if (!it.isNullOrEmpty())
-                adapter.submitList(it.toMutableList())
+                adapter.submitList(sharedViewModel.postListFromMap.value!!.toMutableList())
         })
     }
 

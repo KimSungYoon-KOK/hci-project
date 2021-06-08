@@ -25,6 +25,6 @@ object MyTimeUtils {
     fun getTimeDiff(postTime: Long): Int {
         val nowTime = Calendar.getInstance().timeInMillis
         val diff = nowTime - postTime
-        return (diff / (60 * 60 * 1000)).toInt()
+        return (diff / (60 * 60 * 1000)).toInt() - 6
     }
 }

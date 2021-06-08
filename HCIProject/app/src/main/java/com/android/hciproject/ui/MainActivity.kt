@@ -5,19 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.amazonaws.mobile.client.*
-import com.android.hciproject.databinding.ActivityMainBinding
 import com.android.hciproject.viewmodels.SharedViewModel
+import com.android.hciproject.R
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    val container: ConstraintLayout by lazy {
+        findViewById(R.id.container)
+    }
     private val viewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
     }
 
     fun checkAWS() {

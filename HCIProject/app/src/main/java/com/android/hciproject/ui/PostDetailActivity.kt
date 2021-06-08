@@ -189,7 +189,7 @@ class PostDetailActivity : AppCompatActivity() {
                 .enqueue(updateLikes_mutateCallback)
 
             // 좋아요 버튼 클릭
-            Snackbar.make(binding.container, "좋아요 클릭", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.container, "좋아요!", Snackbar.LENGTH_SHORT).show()
         }
     }
 

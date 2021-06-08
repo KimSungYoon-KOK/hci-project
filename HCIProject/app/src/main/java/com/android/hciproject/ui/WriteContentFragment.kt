@@ -133,7 +133,7 @@ class WriteContentFragment : Fragment() {
                 Log.d("CreatePost_callback", response.data().toString())
                 Snackbar.make(
                     binding.container,
-                    getString(R.string.prompt_upload_post) + viewModel.username.value,
+                    getString(R.string.prompt_upload_post),
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
