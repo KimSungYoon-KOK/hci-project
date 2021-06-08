@@ -1,7 +1,10 @@
 package com.android.hciproject.ui
 
 import android.Manifest
+import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,11 +16,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.hciproject.R
 import com.android.hciproject.databinding.WritePostFragmentBinding
@@ -31,9 +37,8 @@ import java.util.*
 
 class WritePostFragment : Fragment() {
 
-    private var _binding: WritePostFragmentBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var viewModel: WritePostViewModel
+    private lateinit var binding: WritePostFragmentBinding
+    private val viewModel: WritePostViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private var photoUri: Uri? = null
@@ -43,8 +48,7 @@ class WritePostFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = WritePostViewModel()
-        _binding = WritePostFragmentBinding.inflate(inflater, container, false)
+        binding = WritePostFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.sharedViewModel = sharedViewModel
@@ -104,12 +108,20 @@ class WritePostFragment : Fragment() {
         }
     }
 
+
+
     private fun takePicture() {
 //        val intent = Intent(ACTION_PICK).apply {
 //            type = "image/*"
 //        }
-        getContent.launch("image/*")
-
+//        getContent.launch("image/*")
+        val intent = Intent(Intent.ACTION_PICK)
+//            .also {
+//            setFragmentResult()
+//        }
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
+        intent.type = "image/*"
+        getContent.launch(intent)
 
         if (photoUri != null && photoID != null)  {
             //sharedViewModel.setWritingPostImageUri(photoUri!!)
@@ -124,8 +136,8 @@ class WritePostFragment : Fragment() {
     }
 
     ////////////////////////////// Load Photo //////////////////////////////
-    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        Log.d("Intent", uri.toString())
+    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        Log.d("Intent", result.data?.data.toString())
     }
 
     private val requestActivity = registerForActivityResult(

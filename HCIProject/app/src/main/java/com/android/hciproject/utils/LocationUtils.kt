@@ -47,4 +47,33 @@ object LocationUtils {
         return firstLoc.distanceTo(secondLoc)
 
     }
+
+    fun getAverageLatLng(list: ArrayList<LatLng>): LatLng {
+        var avgLat = 0.0
+        var avgLng = 0.0
+        for (latLng in list) {
+            avgLat += latLng.latitude
+            avgLng += latLng.longitude
+        }
+        return LatLng(avgLat / list.size, avgLng / list.size)
+    }
+
+    fun getMaxDistance(list: ArrayList<LatLng>): Double {
+        var avgLat = 0.0
+        var avgLng = 0.0
+        for (latLng in list) {
+            avgLat += latLng.latitude
+            avgLng += latLng.longitude
+        }
+        val target = LatLng(avgLat / list.size, avgLng / list.size)
+
+        var maxDistance = 0.0
+        for (value in list) {
+            val distance = getDistance(value, target).toDouble()
+            if (distance > maxDistance) {
+                maxDistance = distance
+            }
+        }
+        return maxDistance
+    }
 }

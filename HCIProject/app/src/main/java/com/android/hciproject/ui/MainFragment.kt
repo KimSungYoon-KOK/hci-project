@@ -46,7 +46,8 @@ import kotlin.math.abs
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var binding: MainFragmentBinding
+    private var _binding: MainFragmentBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: MainFragmentViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var naverMap: NaverMap
@@ -58,15 +59,15 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private lateinit var infoWindow: InfoWindow
     private lateinit var polyLine: PolylineOverlay
     private val clientFactory = ClientFactory()
+    private var searchFlag = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = inflate(inflater, R.layout.main_fragment, container, false)
+    ): View {
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        binding.sharedViewModel = sharedViewModel
         return binding.root
     }
 
@@ -81,8 +82,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun observeLatLng() {
-        sharedViewModel.latLng.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            fetchPostListFromLocation(it)
+        sharedViewModel.latLng.observe(viewLifecycleOwner, {
+            if (!searchFlag)
+                fetchPostListFromLocation(it)
         })
     }
 
@@ -93,6 +95,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun init() {
+        mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         postMarkers = ArrayList()
         infoWindow = InfoWindow()
         polyLine = PolylineOverlay()
@@ -104,6 +107,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
+                    Log.d("setFusedLocationClient", location.toString())
                     val temp = LatLng(
                         location.latitude,
                         location.longitude
@@ -137,13 +141,52 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun searchPost(query: String) {
+        searchFlag = true
         deleteMarker()
+
+        val list = ArrayList<LatLng>()
         for (post in sharedViewModel.postList.value!!) {
-            if (post.title().contains(query) || (!post.content().isNullOrEmpty() && post.content()!!
-                    .contains(query))
-            ) {
+            if (post.title().contains(query) || post.content()!!.contains(query)) {
                 addMarker(post)
+                list.add(LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble()))
             }
+        }
+        if (list.size > 0) {
+            Snackbar.make(
+                binding.container,
+                "게시물 ${list.size}개를 찾았습니다.",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val avgLatLng = LocationUtils.getAverageLatLng(list)
+            sharedViewModel.fetchSelectedLatLng(avgLatLng)
+            val distance = LocationUtils.getMaxDistance(list)
+            if (distance < 1000)
+                sharedViewModel.fetchSelectedOverlaySize(1000.0)
+            else
+                sharedViewModel.fetchSelectedOverlaySize(distance + 100)
+            when {
+                distance < 1000 -> naverMap.moveCamera(
+                    CameraUpdate.scrollAndZoomTo(
+                        avgLatLng,
+                        13.5
+                    ).animate(CameraAnimation.Fly)
+                )
+                distance < 5000 -> naverMap.moveCamera(
+                    CameraUpdate.scrollAndZoomTo(
+                        avgLatLng,
+                        11.0
+                    ).animate(CameraAnimation.Fly)
+                )
+                else -> naverMap.moveCamera(
+                    CameraUpdate.scrollAndZoomTo(avgLatLng, 7.5).animate(CameraAnimation.Fly)
+                )
+            }
+        } else {
+            Snackbar.make(
+                binding.container,
+                getString(R.string.prompt_fail_search),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -191,6 +234,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun setOnClickListener() {
         binding.showPostListBtn.setOnClickListener {
+            Log.d("버튼누르기전",sharedViewModel.postList.value!!.size.toString())
+            Log.d("버튼누르기전맵",sharedViewModel.postListFromMap.value!!.size.toString())
+
             findNavController().navigate(R.id.action_mainFragment_to_postListFragment)
         }
 
@@ -199,18 +245,57 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.zoomLevel1Btn.setOnClickListener {
-            naverMap.moveCamera(CameraUpdate.zoomTo(8.0).animate(CameraAnimation.Fly))
+            naverMap.moveCamera(CameraUpdate.zoomTo(7.5).animate(CameraAnimation.Fly))
             sharedViewModel.fetchSelectedOverlaySize(50000.0)
+            binding.zoomLevel1Btn.setTextColor(getColor(requireContext(), R.color.primaryTextColor))
+            binding.zoomLevel2Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
+            binding.zoomLevel3Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
         }
 
         binding.zoomLevel2Btn.setOnClickListener {
             naverMap.moveCamera(CameraUpdate.zoomTo(11.0).animate(CameraAnimation.Fly))
             sharedViewModel.fetchSelectedOverlaySize(5000.0)
+            binding.zoomLevel1Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
+            binding.zoomLevel2Btn.setTextColor(getColor(requireContext(), R.color.primaryTextColor))
+            binding.zoomLevel3Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
         }
 
         binding.zoomLevel3Btn.setOnClickListener {
-            naverMap.moveCamera(CameraUpdate.zoomTo(14.0).animate(CameraAnimation.Fly))
+            naverMap.moveCamera(CameraUpdate.zoomTo(13.5).animate(CameraAnimation.Fly))
             sharedViewModel.fetchSelectedOverlaySize(1000.0)
+            binding.zoomLevel1Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
+            binding.zoomLevel2Btn.setTextColor(
+                getColor(
+                    requireContext(),
+                    R.color.themeBackgroundTextColor
+                )
+            )
+            binding.zoomLevel3Btn.setTextColor(getColor(requireContext(), R.color.primaryTextColor))
         }
     }
 
@@ -230,7 +315,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     @UiThread
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
-        mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         naverMap.apply {
             locationSource = mLocationSource
             mapType = NaverMap.MapType.Navi
@@ -252,26 +336,27 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         sharedViewModel.selectedOverlaySize.observe(
             viewLifecycleOwner,
             {
-                fetchPostListFromLocation(sharedViewModel.latLng.value!!)
+                if (!searchFlag) {
+                    fetchPostListFromLocation(sharedViewModel.latLng.value!!)
+                }
                 makeOverlay(sharedViewModel.latLng.value!!)
             })
     }
 
     private fun setMapListener() {
-        naverMap.setOnMapClickListener { _, coord ->
-            naverMap.moveCamera(CameraUpdate.scrollTo(coord).animate(CameraAnimation.Linear))
-            sharedViewModel.fetchSelectedLatLng(coord)
+        naverMap.setOnMapClickListener { _, latLng ->
+            polyLine.map = null
+            naverMap.moveCamera(CameraUpdate.scrollTo(latLng).animate(CameraAnimation.Linear))
         }
 
-        binding.locationBtn.setOnClickListener {
-
-            if (it.isActivated) {
-                Snackbar.make(binding.container, "활성화", Snackbar.LENGTH_SHORT).show()
-            } else {
-                Snackbar.make(binding.container, "비활성화", Snackbar.LENGTH_SHORT).show()
+        naverMap.addOnCameraChangeListener { reason, _ ->
+            if (reason == CameraUpdate.REASON_GESTURE) {
+                Log.d("addOnCameraChangeListener", "change!")
+                val latLng = naverMap.cameraPosition.target
+                sharedViewModel.fetchSelectedLatLng(latLng)
+                searchFlag = false
             }
         }
-
     }
 
     private fun fetchPostListFromLocation(selectedLatLng: LatLng) {
@@ -315,6 +400,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMarker(post: ListPostsQuery.Item) {
+        Log.d("addMarker", post.title())
         val listener = Overlay.OnClickListener { overlay ->
             val postLatLng =
                 LatLng(post.uploadLat()!!.toDouble(), post.uploadLng()!!.toDouble())
@@ -368,11 +454,20 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         postMarker.map = naverMap
 
         postMarkers.add(postMarker)
+        sharedViewModel.addPostListFromMap(post)
+
     }
 
     private fun deleteMarker() {
+        Log.d("deleteMarker","")
+        sharedViewModel.deletePostListFromMap()
         for (m in postMarkers)
             m.map = null
         postMarkers.clear()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
